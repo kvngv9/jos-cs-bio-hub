@@ -18,36 +18,66 @@ interface Student {
   status: "Active" | "Graduate" | "Suspended"
 }
 
-// Mock data for demonstration
+// Mock data with realistic Nigerian names
 const mockStudents: Student[] = [
   {
     id: "1",
-    name: "John Doe",
+    name: "Adebayo Olumide",
     studentId: "CS/2020/001",
     level: "400",
     cgpa: 4.5,
-    email: "john.doe@unijos.edu.ng",
+    email: "adebayo.olumide@unijos.edu.ng",
     skills: ["JavaScript", "React", "Node.js"],
     status: "Active"
   },
   {
     id: "2", 
-    name: "Jane Smith",
+    name: "Fatima Usman",
     studentId: "CS/2021/045",
     level: "300",
     cgpa: 4.2,
-    email: "jane.smith@unijos.edu.ng",
+    email: "fatima.usman@unijos.edu.ng",
     skills: ["Python", "Django", "PostgreSQL"],
     status: "Active"
   },
   {
     id: "3",
-    name: "Michael Johnson",
+    name: "Chinedu Okafor",
     studentId: "CS/2019/123",
     level: "500",
     cgpa: 4.8,
-    email: "michael.j@unijos.edu.ng", 
+    email: "chinedu.okafor@unijos.edu.ng", 
     skills: ["Java", "Spring", "Angular"],
+    status: "Active"
+  },
+  {
+    id: "4",
+    name: "Aisha Abdullahi",
+    studentId: "CS/2022/078",
+    level: "200",
+    cgpa: 3.9,
+    email: "aisha.abdullahi@unijos.edu.ng",
+    skills: ["C++", "Data Structures", "Algorithms"],
+    status: "Active"
+  },
+  {
+    id: "5",
+    name: "Emeka Nwosu",
+    studentId: "CS/2020/156",
+    level: "400",
+    cgpa: 4.1,
+    email: "emeka.nwosu@unijos.edu.ng",
+    skills: ["PHP", "Laravel", "MySQL"],
+    status: "Active"
+  },
+  {
+    id: "6",
+    name: "Zainab Mohammed",
+    studentId: "CS/2021/089",
+    level: "300",
+    cgpa: 4.6,
+    email: "zainab.mohammed@unijos.edu.ng",
+    skills: ["React Native", "Flutter", "Mobile Dev"],
     status: "Active"
   }
 ]
@@ -72,7 +102,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 space-y-8">
+    <div className="min-h-screen relative">
+      <div className="container mx-auto py-8 responsive-padding space-y-8">
       {/* Page Header */}
       <div className="text-center space-y-4 animate-fade-in">
         <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
@@ -84,7 +115,7 @@ export default function Dashboard() {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 animate-slide-up">
+      <div className="grid gap-6 md:grid-cols-3 animate-slide-up">
         <Card className="card-academic">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Students</CardTitle>
@@ -104,17 +135,6 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold text-success">{stats.activeStudents}</div>
             <p className="text-xs text-muted-foreground">Currently enrolled</p>
-          </CardContent>
-        </Card>
-
-        <Card className="card-academic">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average CGPA</CardTitle>
-            <TrendingUp className="h-4 w-4 text-info" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-info">{stats.averageCGPA}</div>
-            <p className="text-xs text-muted-foreground">Department average</p>
           </CardContent>
         </Card>
 
@@ -213,7 +233,11 @@ export default function Dashboard() {
                 >
                   {student.status}
                 </Badge>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => alert(`Viewing profile for ${student.name}\nStudent ID: ${student.studentId}\nEmail: ${student.email}\nCGPA: ${student.cgpa}\nSkills: ${student.skills.join(', ')}`)}
+                >
                   View Profile
                 </Button>
               </div>
@@ -249,6 +273,7 @@ export default function Dashboard() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

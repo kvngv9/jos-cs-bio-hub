@@ -38,11 +38,17 @@ export function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-popover/95 backdrop-blur">
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem 
+                className="cursor-pointer"
+                onClick={() => alert('Profile Management\n\nAdmin Profile:\nName: Dr. Samuel Adebayo\nRole: Head of Department\nEmail: samuel.adebayo@unijos.edu.ng\nDepartment: Computer Science\nOffice: Block B, Room 205')}
+              >
                 <User className="mr-2 h-4 w-4" />
                 View Profile
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem 
+                className="cursor-pointer"
+                onClick={() => alert('System Settings\n\n• Theme: Dark/Light Mode\n• Notifications: Enabled\n• Auto-backup: Daily\n• Language: English\n• Time Zone: GMT+1 (Lagos)\n• Session Timeout: 30 minutes\n• Export Format: PDF/Excel')}
+              >
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
               </DropdownMenuItem>
