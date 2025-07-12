@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Header } from "@/components/Header"
+import { AnimatedBackground } from "@/components/AnimatedBackground"
 
 const Index = () => {
   const features = [
@@ -41,7 +42,8 @@ const Index = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      <AnimatedBackground />
       <Header />
       
       {/* Hero Section */}

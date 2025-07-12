@@ -20,8 +20,9 @@ interface Student {
   status: "Active" | "Graduate" | "Suspended"
 }
 
-// Mock data with realistic Nigerian names
+// Mock data with realistic Nigerian names - Extended across all levels
 const mockStudents: Student[] = [
+  // 400 Level Students
   {
     id: "1",
     name: "Adebayo Olumide",
@@ -33,17 +34,7 @@ const mockStudents: Student[] = [
     status: "Active"
   },
   {
-    id: "2", 
-    name: "Fatima Usman",
-    studentId: "CS/2021/045",
-    level: "300",
-    cgpa: 4.2,
-    email: "fatima.usman@unijos.edu.ng",
-    skills: ["Python", "Django", "PostgreSQL"],
-    status: "Active"
-  },
-  {
-    id: "3",
+    id: "2",
     name: "Chinedu Okafor",
     studentId: "CS/2019/123",
     level: "400",
@@ -53,17 +44,7 @@ const mockStudents: Student[] = [
     status: "Active"
   },
   {
-    id: "4",
-    name: "Aisha Abdullahi",
-    studentId: "CS/2022/078",
-    level: "200",
-    cgpa: 3.9,
-    email: "aisha.abdullahi@unijos.edu.ng",
-    skills: ["C++", "Data Structures", "Algorithms"],
-    status: "Active"
-  },
-  {
-    id: "5",
+    id: "3",
     name: "Emeka Nwosu",
     studentId: "CS/2020/156",
     level: "400",
@@ -73,13 +54,179 @@ const mockStudents: Student[] = [
     status: "Active"
   },
   {
-    id: "6",
+    id: "4",
+    name: "Blessing Okoro",
+    studentId: "CS/2020/089",
+    level: "400",
+    cgpa: 4.3,
+    email: "blessing.okoro@unijos.edu.ng",
+    skills: ["C#", ".NET", "Azure"],
+    status: "Active"
+  },
+  {
+    id: "5",
+    name: "Ibrahim Musa",
+    studentId: "CS/2020/145",
+    level: "400",
+    cgpa: 4.0,
+    email: "ibrahim.musa@unijos.edu.ng",
+    skills: ["Go", "Kubernetes", "Docker"],
+    status: "Active"
+  },
+  
+  // 300 Level Students
+  {
+    id: "6", 
+    name: "Fatima Usman",
+    studentId: "CS/2021/045",
+    level: "300",
+    cgpa: 4.2,
+    email: "fatima.usman@unijos.edu.ng",
+    skills: ["Python", "Django", "PostgreSQL"],
+    status: "Active"
+  },
+  {
+    id: "7",
     name: "Zainab Mohammed",
     studentId: "CS/2021/089",
     level: "300",
     cgpa: 4.6,
     email: "zainab.mohammed@unijos.edu.ng",
     skills: ["React Native", "Flutter", "Mobile Dev"],
+    status: "Active"
+  },
+  {
+    id: "8",
+    name: "Daniel Yakubu",
+    studentId: "CS/2021/112",
+    level: "300",
+    cgpa: 3.8,
+    email: "daniel.yakubu@unijos.edu.ng",
+    skills: ["Ruby", "Rails", "Redis"],
+    status: "Active"
+  },
+  {
+    id: "9",
+    name: "Grace Adamu",
+    studentId: "CS/2021/203",
+    level: "300",
+    cgpa: 4.4,
+    email: "grace.adamu@unijos.edu.ng",
+    skills: ["Vue.js", "TypeScript", "Firebase"],
+    status: "Active"
+  },
+  {
+    id: "10",
+    name: "Yusuf Garba",
+    studentId: "CS/2021/167",
+    level: "300",
+    cgpa: 3.9,
+    email: "yusuf.garba@unijos.edu.ng",
+    skills: ["Rust", "WebAssembly", "Blockchain"],
+    status: "Active"
+  },
+  
+  // 200 Level Students
+  {
+    id: "11",
+    name: "Aisha Abdullahi",
+    studentId: "CS/2022/078",
+    level: "200",
+    cgpa: 3.9,
+    email: "aisha.abdullahi@unijos.edu.ng",
+    skills: ["C++", "Data Structures", "Algorithms"],
+    status: "Active"
+  },
+  {
+    id: "12",
+    name: "Michael Eze",
+    studentId: "CS/2022/134",
+    level: "200",
+    cgpa: 3.7,
+    email: "michael.eze@unijos.edu.ng",
+    skills: ["HTML", "CSS", "JavaScript"],
+    status: "Active"
+  },
+  {
+    id: "13",
+    name: "Khadija Sani",
+    studentId: "CS/2022/098",
+    level: "200",
+    cgpa: 4.1,
+    email: "khadija.sani@unijos.edu.ng",
+    skills: ["Python", "Pandas", "NumPy"],
+    status: "Active"
+  },
+  {
+    id: "14",
+    name: "James Akpan",
+    studentId: "CS/2022/156",
+    level: "200",
+    cgpa: 3.6,
+    email: "james.akpan@unijos.edu.ng",
+    skills: ["Java", "OOP", "SQL"],
+    status: "Active"
+  },
+  {
+    id: "15",
+    name: "Hauwa Ahmed",
+    studentId: "CS/2022/201",
+    level: "200",
+    cgpa: 4.0,
+    email: "hauwa.ahmed@unijos.edu.ng",
+    skills: ["C", "Assembly", "Computer Architecture"],
+    status: "Active"
+  },
+  
+  // 100 Level Students
+  {
+    id: "16",
+    name: "Samuel Okonkwo",
+    studentId: "CS/2023/045",
+    level: "100",
+    cgpa: 3.8,
+    email: "samuel.okonkwo@unijos.edu.ng",
+    skills: ["Basic Programming", "Mathematics", "Logic"],
+    status: "Active"
+  },
+  {
+    id: "17",
+    name: "Mary Titus",
+    studentId: "CS/2023/089",
+    level: "100",
+    cgpa: 4.2,
+    email: "mary.titus@unijos.edu.ng",
+    skills: ["Python Basics", "Problem Solving", "Mathematics"],
+    status: "Active"
+  },
+  {
+    id: "18",
+    name: "Abdul Rahman",
+    studentId: "CS/2023/123",
+    level: "100",
+    cgpa: 3.5,
+    email: "abdul.rahman@unijos.edu.ng",
+    skills: ["C Programming", "Discrete Math", "Logic"],
+    status: "Active"
+  },
+  {
+    id: "19",
+    name: "Esther John",
+    studentId: "CS/2023/167",
+    level: "100",
+    cgpa: 3.9,
+    email: "esther.john@unijos.edu.ng",
+    skills: ["HTML", "Basic CSS", "Mathematics"],
+    status: "Active"
+  },
+  {
+    id: "20",
+    name: "Aliyu Bello",
+    studentId: "CS/2023/201",
+    level: "100",
+    cgpa: 3.7,
+    email: "aliyu.bello@unijos.edu.ng",
+    skills: ["Programming Fundamentals", "Computer Literacy", "Mathematics"],
     status: "Active"
   }
 ]
@@ -315,19 +462,67 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+            <Button 
+              variant="outline" 
+              className="h-auto p-4 flex flex-col items-center gap-2"
+              onClick={() => {
+                // Mock bulk import functionality
+                alert("Bulk import feature coming soon! This will allow you to import multiple student records from CSV/Excel files.")
+              }}
+            >
               <Users className="h-6 w-6 text-primary" />
               <span className="text-sm">Bulk Import</span>
             </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+            <Button 
+              variant="outline" 
+              className="h-auto p-4 flex flex-col items-center gap-2"
+              onClick={() => {
+                // Mock report generation
+                const reportData = {
+                  totalStudents: stats.totalStudents,
+                  byLevel: {
+                    "100": students.filter(s => s.level === "100").length,
+                    "200": students.filter(s => s.level === "200").length,
+                    "300": students.filter(s => s.level === "300").length,
+                    "400": students.filter(s => s.level === "400").length,
+                  },
+                  averageCGPA: (students.reduce((sum, s) => sum + s.cgpa, 0) / students.length).toFixed(2)
+                }
+                alert(`Report Generated!\n\nTotal Students: ${reportData.totalStudents}\nBy Level: 100L(${reportData.byLevel["100"]}), 200L(${reportData.byLevel["200"]}), 300L(${reportData.byLevel["300"]}), 400L(${reportData.byLevel["400"]})\nAverage CGPA: ${reportData.averageCGPA}`)
+              }}
+            >
               <Filter className="h-6 w-6 text-primary" />
               <span className="text-sm">Generate Report</span>
             </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+            <Button 
+              variant="outline" 
+              className="h-auto p-4 flex flex-col items-center gap-2"
+              onClick={() => {
+                // Mock academic records access
+                alert("Academic Records module will allow you to:\n• View detailed transcripts\n• Track course progressions\n• Monitor academic performance\n• Generate official documents")
+              }}
+            >
               <GraduationCap className="h-6 w-6 text-primary" />
               <span className="text-sm">Academic Records</span>
             </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+            <Button 
+              variant="outline" 
+              className="h-auto p-4 flex flex-col items-center gap-2"
+              onClick={() => {
+                // Mock data export
+                const csvData = students.map(s => 
+                  `${s.name},${s.studentId},${s.level},${s.cgpa},${s.email},${s.skills.join(';')},${s.status}`
+                ).join('\n')
+                const header = "Name,Student ID,Level,CGPA,Email,Skills,Status\n"
+                const blob = new Blob([header + csvData], { type: 'text/csv' })
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = 'students_data.csv'
+                a.click()
+                window.URL.revokeObjectURL(url)
+              }}
+            >
               <Trophy className="h-6 w-6 text-primary" />
               <span className="text-sm">Export Data</span>
             </Button>

@@ -6,52 +6,52 @@
 
 @layer base {
   :root {
-    /* Core Brand Colors */
-    --background: 0 0% 100%;
+    /* Core Brand Colors - Enhanced Light Mode */
+    --background: 0 0% 99%;
     --foreground: 222.2 84% 4.9%;
     
-    /* University Theme Colors */
-    --primary: 210 100% 45%;
+    /* University Theme Colors - Enhanced */
+    --primary: 210 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-muted: 210 40% 85%;
+    --primary-muted: 210 50% 92%;
     
-    /* Academic Colors */
-    --secondary: 280 65% 60%;
+    /* Academic Colors - Enhanced */
+    --secondary: 280 65% 65%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Success & Status */
-    --success: 142 76% 36%;
+    /* Success & Status - Enhanced */
+    --success: 142 76% 40%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
+    --warning: 38 92% 55%;
     --warning-foreground: 0 0% 100%;
-    --info: 199 89% 48%;
+    --info: 199 89% 52%;
     --info-foreground: 0 0% 100%;
 
-    /* UI Components */
-    --card: 0 0% 100%;
+    /* UI Components - Enhanced Light Mode */
+    --card: 0 0% 98%;
     --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
+    --popover: 0 0% 98%;
     --popover-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
+    --muted: 210 40% 95%;
+    --muted-foreground: 215.4 16.3% 40%;
+    --accent: 210 40% 93%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 210 100% 45%;
+    --border: 214.3 31.8% 87%;
+    --input: 214.3 31.8% 87%;
+    --ring: 210 100% 50%;
     --radius: 0.75rem;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(210 100% 45%), hsl(199 89% 48%));
-    --gradient-secondary: linear-gradient(135deg, hsl(280 65% 60%), hsl(210 100% 45%));
-    --gradient-academic: linear-gradient(180deg, hsl(210 40% 96.1%), hsl(210 100% 97%));
+    /* Gradients - Enhanced */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 50%), hsl(199 89% 52%));
+    --gradient-secondary: linear-gradient(135deg, hsl(280 65% 65%), hsl(210 100% 50%));
+    --gradient-academic: linear-gradient(180deg, hsl(210 40% 95%), hsl(210 50% 97%));
 
-    /* Shadows */
-    --shadow-soft: 0 4px 20px hsl(210 100% 45% / 0.1);
-    --shadow-medium: 0 8px 30px hsl(210 100% 45% / 0.15);
-    --shadow-strong: 0 12px 40px hsl(210 100% 45% / 0.25);
+    /* Shadows - Enhanced */
+    --shadow-soft: 0 4px 20px hsl(210 100% 50% / 0.15);
+    --shadow-medium: 0 8px 30px hsl(210 100% 50% / 0.20);
+    --shadow-strong: 0 12px 40px hsl(210 100% 50% / 0.30);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
