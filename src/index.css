@@ -223,6 +223,17 @@
   }
 }
 
+@keyframes pulse-float {
+  0%, 100% {
+    transform: translateY(0px) scale(0.8);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-50px) scale(1.2);
+    opacity: 0.7;
+  }
+}
+
 /* Background Animation Elements */
 .animated-background {
   position: fixed;
@@ -234,29 +245,46 @@
   overflow: hidden;
   background: linear-gradient(-45deg, 
     hsl(var(--background)), 
-    hsl(var(--primary) / 0.02), 
-    hsl(var(--secondary) / 0.02), 
-    hsl(var(--accent) / 0.03));
+    hsl(var(--primary) / 0.08), 
+    hsl(var(--secondary) / 0.06), 
+    hsl(var(--accent) / 0.1));
   background-size: 400% 400%;
-  animation: gradient-shift 15s ease infinite;
+  animation: gradient-shift 12s ease infinite;
 }
 
 .floating-particle {
   position: absolute;
   background: linear-gradient(45deg, 
-    hsl(var(--primary) / 0.1), 
-    hsl(var(--secondary) / 0.1));
+    hsl(var(--primary) / 0.6), 
+    hsl(var(--secondary) / 0.4));
   border-radius: 50%;
-  animation: floating-particles 20s infinite linear;
+  animation: floating-particles 15s infinite linear;
+  box-shadow: 0 0 15px hsl(var(--primary) / 0.3);
+  filter: blur(0.5px);
+  border: 1px solid hsl(var(--primary) / 0.2);
 }
 
 .geometric-shape {
   position: absolute;
   background: linear-gradient(135deg, 
-    hsl(var(--primary) / 0.05), 
-    hsl(var(--info) / 0.05));
+    hsl(var(--primary) / 0.3), 
+    hsl(var(--info) / 0.2));
   border-radius: 20%;
-  animation: geometric-flow 30s infinite ease-in-out;
+  animation: geometric-flow 20s infinite ease-in-out;
+  box-shadow: 0 0 25px hsl(var(--primary) / 0.2);
+  filter: blur(1px);
+  border: 1px solid hsl(var(--accent) / 0.3);
+}
+
+.gradient-orb {
+  position: absolute;
+  background: radial-gradient(circle, 
+    hsl(var(--primary) / 0.4) 0%, 
+    hsl(var(--secondary) / 0.3) 50%, 
+    transparent 70%);
+  border-radius: 50%;
+  animation: pulse-float 25s infinite ease-in-out;
+  filter: blur(2px);
 }
 
 /* Responsive Improvements */
