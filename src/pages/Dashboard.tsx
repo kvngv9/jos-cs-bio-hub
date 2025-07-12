@@ -1,10 +1,12 @@
 import { useState } from "react"
-import { Users, GraduationCap, Trophy, TrendingUp, Plus, Search, Filter } from "lucide-react"
+import { Users, GraduationCap, Trophy, TrendingUp, Plus, Search, Filter, X, Mail, Phone, MapPin } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useNavigate } from "react-router-dom"
 
 interface Student {
   id: string
@@ -44,7 +46,7 @@ const mockStudents: Student[] = [
     id: "3",
     name: "Chinedu Okafor",
     studentId: "CS/2019/123",
-    level: "500",
+    level: "400",
     cgpa: 4.8,
     email: "chinedu.okafor@unijos.edu.ng", 
     skills: ["Java", "Spring", "Angular"],
@@ -86,6 +88,7 @@ export default function Dashboard() {
   const [students] = useState<Student[]>(mockStudents)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterLevel, setFilterLevel] = useState<string>("all")
+  const navigate = useNavigate()
 
   const filteredStudents = students.filter(student => {
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -97,8 +100,7 @@ export default function Dashboard() {
   const stats = {
     totalStudents: students.length,
     activeStudents: students.filter(s => s.status === "Active").length,
-    averageCGPA: (students.reduce((sum, s) => sum + s.cgpa, 0) / students.length).toFixed(2),
-    graduatesThisYear: students.filter(s => s.level === "500").length
+    finalYearStudents: students.filter(s => s.level === "400").length
   }
 
   return (
@@ -144,8 +146,8 @@ export default function Dashboard() {
             <Trophy className="h-4 w-4 text-warning" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-warning">{stats.graduatesThisYear}</div>
-            <p className="text-xs text-muted-foreground">500 Level students</p>
+            <div className="text-2xl font-bold text-warning">{stats.finalYearStudents}</div>
+            <p className="text-xs text-muted-foreground">400 Level students</p>
           </CardContent>
         </Card>
       </div>
@@ -172,10 +174,13 @@ export default function Dashboard() {
             <option value="200">200 Level</option>
             <option value="300">300 Level</option>
             <option value="400">400 Level</option>
-            <option value="500">500 Level</option>
           </select>
         </div>
-        <Button className="btn-university" size="lg">
+        <Button 
+          className="btn-university" 
+          size="lg"
+          onClick={() => navigate('/biodata-form')}
+        >
           <Plus className="h-4 w-4 mr-2" />
           Add New Student
         </Button>
@@ -233,13 +238,69 @@ export default function Dashboard() {
                 >
                   {student.status}
                 </Badge>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => alert(`Viewing profile for ${student.name}\nStudent ID: ${student.studentId}\nEmail: ${student.email}\nCGPA: ${student.cgpa}\nSkills: ${student.skills.join(', ')}`)}
-                >
-                  View Profile
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      View Profile
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={student.profileImage} />
+                          <AvatarFallback className="bg-gradient-primary text-white font-semibold text-sm">
+                            {student.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        {student.name}
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Student ID</p>
+                          <p className="font-medium">{student.studentId}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Level</p>
+                          <p className="font-medium">{student.level}L</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">CGPA</p>
+                          <p className="font-bold text-primary">{student.cgpa.toFixed(2)}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Status</p>
+                          <Badge variant={student.status === "Active" ? "default" : "secondary"} className="w-fit">
+                            {student.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-2">Contact Information</p>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Mail className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">{student.email}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-2">Skills & Technologies</p>
+                        <div className="flex flex-wrap gap-2">
+                          {student.skills.map((skill) => (
+                            <Badge key={skill} variant="secondary" className="text-xs">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </CardContent>
           </Card>
