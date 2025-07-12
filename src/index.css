@@ -58,43 +58,51 @@
   }
 
   .dark {
-    /* Dark Mode Colors */
-    --background: 222.2 84% 4.9%;
+    /* Dark Mode Colors - Enhanced */
+    --background: 222.2 84% 3.5%;
     --foreground: 210 40% 98%;
     
-    /* University Theme Colors - Dark */
-    --primary: 210 100% 55%;
+    /* University Theme Colors - Dark Enhanced */
+    --primary: 210 100% 60%;
     --primary-foreground: 222.2 84% 4.9%;
-    --primary-muted: 210 40% 25%;
+    --primary-muted: 210 50% 20%;
     
-    /* Academic Colors - Dark */
-    --secondary: 280 65% 70%;
+    /* Academic Colors - Dark Enhanced */
+    --secondary: 280 70% 75%;
     --secondary-foreground: 222.2 84% 4.9%;
 
-    /* UI Components - Dark */
-    --card: 217.2 32.6% 17.5%;
+    /* Success & Status - Dark */
+    --success: 142 76% 45%;
+    --success-foreground: 222.2 84% 4.9%;
+    --warning: 38 92% 60%;
+    --warning-foreground: 222.2 84% 4.9%;
+    --info: 199 89% 58%;
+    --info-foreground: 222.2 84% 4.9%;
+
+    /* UI Components - Dark Enhanced */
+    --card: 217.2 32.6% 8%;
     --card-foreground: 210 40% 98%;
-    --popover: 217.2 32.6% 17.5%;
+    --popover: 217.2 32.6% 8%;
     --popover-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 20%;
+    --muted: 217.2 32.6% 12%;
+    --muted-foreground: 215 20.2% 70%;
+    --accent: 217.2 32.6% 15%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 50%;
+    --destructive: 0 62.8% 55%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 20%;
-    --input: 217.2 32.6% 20%;
-    --ring: 210 100% 55%;
+    --border: 217.2 32.6% 15%;
+    --input: 217.2 32.6% 15%;
+    --ring: 210 100% 60%;
 
-    /* Gradients - Dark */
-    --gradient-primary: linear-gradient(135deg, hsl(210 100% 55%), hsl(199 89% 58%));
-    --gradient-secondary: linear-gradient(135deg, hsl(280 65% 70%), hsl(210 100% 55%));
-    --gradient-academic: linear-gradient(180deg, hsl(217.2 32.6% 17.5%), hsl(217.2 32.6% 22%));
+    /* Gradients - Dark Enhanced */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 60%), hsl(199 89% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(280 70% 75%), hsl(210 100% 60%));
+    --gradient-academic: linear-gradient(180deg, hsl(217.2 32.6% 8%), hsl(217.2 32.6% 12%));
 
-    /* Shadows - Dark */
-    --shadow-soft: 0 4px 20px hsl(0 0% 0% / 0.3);
-    --shadow-medium: 0 8px 30px hsl(0 0% 0% / 0.4);
-    --shadow-strong: 0 12px 40px hsl(0 0% 0% / 0.5);
+    /* Shadows - Dark Enhanced */
+    --shadow-soft: 0 4px 20px hsl(210 100% 60% / 0.15);
+    --shadow-medium: 0 8px 30px hsl(210 100% 60% / 0.25);
+    --shadow-strong: 0 12px 40px hsl(210 100% 60% / 0.35);
   }
 }
 
