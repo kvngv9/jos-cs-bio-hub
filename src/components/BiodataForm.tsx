@@ -44,7 +44,8 @@ const biodataSchema = z.object({
   // Academic Information
   studentId: z.string().min(1, "Student ID is required"),
   level: z.enum(["100", "200", "300", "400", "500"]),
-  cgpa: z.string().refine((val) => {
+  cgpa: z.string().optional().refine((val) => {
+    if (!val || val === "") return true; // Allow empty/undefined values
     const num = parseFloat(val);
     return !isNaN(num) && num >= 0 && num <= 5.0;
   }, "CGPA must be between 0.00 and 5.00"),
@@ -445,15 +446,15 @@ export function BiodataForm() {
                   </FormItem>
                 )}
               />
-              <FormField
+                <FormField
                 control={form.control}
                 name="cgpa"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Current CGPA</FormLabel>
+                    <FormLabel>Current CGPA (Optional)</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="e.g., 4.50" 
+                        placeholder="e.g., 4.50 (optional)" 
                         type="number" 
                         step="0.01" 
                         min="0" 

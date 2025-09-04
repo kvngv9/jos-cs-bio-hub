@@ -151,8 +151,7 @@ const Index = () => {
             </Link>
             <Button 
               size="lg" 
-              variant="outline" 
-              className="px-8 py-3 text-lg border-white text-white hover:bg-white hover:text-primary transition-all duration-300 font-semibold shadow-lg hover:shadow-xl backdrop-blur-sm"
+              className="px-8 py-3 text-lg bg-success hover:bg-success/90 text-success-foreground transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
             >
               Learn More
             </Button>

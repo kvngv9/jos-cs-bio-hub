@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo, useCallback, memo } from "react"
 import { Users, GraduationCap, Trophy, TrendingUp, Plus, Search, Filter, X, Mail, Phone, MapPin } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useNavigate } from "react-router-dom"
+import { useAdmin } from "@/hooks/useAdmin"
+import { AdminDialog } from "@/components/AdminDialog"
+import { useToast } from "@/hooks/use-toast"
 
 interface Student {
   id: string
@@ -235,20 +238,88 @@ export default function Dashboard() {
   const [students] = useState<Student[]>(mockStudents)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterLevel, setFilterLevel] = useState<string>("all")
+  const [adminDialogOpen, setAdminDialogOpen] = useState(false)
+  const [pendingAdminAction, setPendingAdminAction] = useState<() => void>(() => {})
+  const [adminFeature, setAdminFeature] = useState("")
+  
   const navigate = useNavigate()
+  const { isAdmin } = useAdmin()
+  const { toast } = useToast()
 
-  const filteredStudents = students.filter(student => {
-    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.studentId.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesLevel = filterLevel === "all" || student.level === filterLevel
-    return matchesSearch && matchesLevel
-  })
+  const filteredStudents = useMemo(() => {
+    return students.filter(student => {
+      const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           student.studentId.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesLevel = filterLevel === "all" || student.level === filterLevel
+      return matchesSearch && matchesLevel
+    })
+  }, [students, searchTerm, filterLevel])
 
-  const stats = {
+  const stats = useMemo(() => ({
     totalStudents: students.length,
     activeStudents: students.filter(s => s.status === "Active").length,
     finalYearStudents: students.filter(s => s.level === "400").length
-  }
+  }), [students])
+
+  const requireAdminAccess = useCallback((action: () => void, featureName: string) => {
+    if (isAdmin) {
+      action()
+    } else {
+      setPendingAdminAction(() => action)
+      setAdminFeature(featureName)
+      setAdminDialogOpen(true)
+    }
+  }, [isAdmin])
+
+  const handleBulkImport = useCallback(() => {
+    toast({
+      title: "Bulk Import Feature",
+      description: "This will allow you to import multiple student records from CSV/Excel files. Feature coming soon!",
+    })
+  }, [toast])
+
+  const handleGenerateReport = useCallback(() => {
+    const reportData = {
+      totalStudents: stats.totalStudents,
+      byLevel: {
+        "100": students.filter(s => s.level === "100").length,
+        "200": students.filter(s => s.level === "200").length,
+        "300": students.filter(s => s.level === "300").length,
+        "400": students.filter(s => s.level === "400").length,
+      },
+      averageCGPA: (students.reduce((sum, s) => sum + s.cgpa, 0) / students.length).toFixed(2)
+    }
+    toast({
+      title: "Report Generated Successfully!",
+      description: `Total Students: ${reportData.totalStudents}, Average CGPA: ${reportData.averageCGPA}`,
+    })
+  }, [stats, students, toast])
+
+  const handleAcademicRecords = useCallback(() => {
+    toast({
+      title: "Academic Records Access",
+      description: "Access granted to view detailed transcripts, track course progressions, and generate official documents.",
+    })
+  }, [toast])
+
+  const handleExportData = useCallback(() => {
+    const csvData = students.map(s => 
+      `${s.name},${s.studentId},${s.level},${s.cgpa},${s.email},${s.skills.join(';')},${s.status}`
+    ).join('\n')
+    const header = "Name,Student ID,Level,CGPA,Email,Skills,Status\n"
+    const blob = new Blob([header + csvData], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'students_data.csv'
+    a.click()
+    window.URL.revokeObjectURL(url)
+    
+    toast({
+      title: "Data Exported Successfully!",
+      description: "Student data has been exported to CSV file.",
+    })
+  }, [students, toast])
 
   return (
     <div className="min-h-screen relative">
@@ -465,63 +536,34 @@ export default function Dashboard() {
             <Button 
               variant="outline" 
               className="h-auto p-4 flex flex-col items-center gap-2"
-              onClick={() => {
-                // Mock bulk import functionality
-                alert("Bulk import feature coming soon! This will allow you to import multiple student records from CSV/Excel files.")
-              }}
+              onClick={() => requireAdminAccess(handleBulkImport, "Bulk Import")}
             >
               <Users className="h-6 w-6 text-primary" />
               <span className="text-sm">Bulk Import</span>
+              {!isAdmin && <span className="text-xs text-muted-foreground">(Admin Only)</span>}
             </Button>
             <Button 
               variant="outline" 
               className="h-auto p-4 flex flex-col items-center gap-2"
-              onClick={() => {
-                // Mock report generation
-                const reportData = {
-                  totalStudents: stats.totalStudents,
-                  byLevel: {
-                    "100": students.filter(s => s.level === "100").length,
-                    "200": students.filter(s => s.level === "200").length,
-                    "300": students.filter(s => s.level === "300").length,
-                    "400": students.filter(s => s.level === "400").length,
-                  },
-                  averageCGPA: (students.reduce((sum, s) => sum + s.cgpa, 0) / students.length).toFixed(2)
-                }
-                alert(`Report Generated!\n\nTotal Students: ${reportData.totalStudents}\nBy Level: 100L(${reportData.byLevel["100"]}), 200L(${reportData.byLevel["200"]}), 300L(${reportData.byLevel["300"]}), 400L(${reportData.byLevel["400"]})\nAverage CGPA: ${reportData.averageCGPA}`)
-              }}
+              onClick={() => requireAdminAccess(handleGenerateReport, "Generate Report")}
             >
               <Filter className="h-6 w-6 text-primary" />
               <span className="text-sm">Generate Report</span>
+              {!isAdmin && <span className="text-xs text-muted-foreground">(Admin Only)</span>}
             </Button>
             <Button 
               variant="outline" 
               className="h-auto p-4 flex flex-col items-center gap-2"
-              onClick={() => {
-                // Mock academic records access
-                alert("Academic Records module will allow you to:\n• View detailed transcripts\n• Track course progressions\n• Monitor academic performance\n• Generate official documents")
-              }}
+              onClick={() => requireAdminAccess(handleAcademicRecords, "Academic Records")}
             >
               <GraduationCap className="h-6 w-6 text-primary" />
               <span className="text-sm">Academic Records</span>
+              {!isAdmin && <span className="text-xs text-muted-foreground">(Admin Only)</span>}
             </Button>
             <Button 
               variant="outline" 
               className="h-auto p-4 flex flex-col items-center gap-2"
-              onClick={() => {
-                // Mock data export
-                const csvData = students.map(s => 
-                  `${s.name},${s.studentId},${s.level},${s.cgpa},${s.email},${s.skills.join(';')},${s.status}`
-                ).join('\n')
-                const header = "Name,Student ID,Level,CGPA,Email,Skills,Status\n"
-                const blob = new Blob([header + csvData], { type: 'text/csv' })
-                const url = window.URL.createObjectURL(blob)
-                const a = document.createElement('a')
-                a.href = url
-                a.download = 'students_data.csv'
-                a.click()
-                window.URL.revokeObjectURL(url)
-              }}
+              onClick={handleExportData}
             >
               <Trophy className="h-6 w-6 text-primary" />
               <span className="text-sm">Export Data</span>
@@ -529,6 +571,14 @@ export default function Dashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Admin Dialog */}
+      <AdminDialog
+        isOpen={adminDialogOpen}
+        onClose={() => setAdminDialogOpen(false)}
+        onSuccess={pendingAdminAction}
+        feature={adminFeature}
+      />
       </div>
     </div>
   )
