@@ -52,6 +52,11 @@ const biodataSchema = z.object({
   entryYear: z.string().min(4, "Entry year is required"),
   expectedGraduation: z.string().min(4, "Expected graduation year is required"),
   
+  // Additional Information
+  hobbies: z.string().optional(),
+  goals: z.string().optional(),
+  personalityType: z.enum(["creative", "logical", "leader", "social", "adventurous", "harmonious"]).optional(),
+  
   // Emergency Contact
   emergencyName: z.string().min(2, "Emergency contact name is required"),
   emergencyPhone: z.string().min(10, "Emergency contact phone is required"),
@@ -654,6 +659,80 @@ export function BiodataForm() {
                 <Plus className="h-4 w-4 mr-2" />
                 Add Experience
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Personal Development */}
+          <Card className="card-academic animate-slide-up">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5 text-primary" />
+                Personal Development
+              </CardTitle>
+              <CardDescription>
+                Share your hobbies, goals, and personality type
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <FormField
+                control={form.control}
+                name="hobbies"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Hobbies & Interests (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="e.g., Reading, Football, Music, Photography, Gaming..."
+                        {...field} 
+                        className="resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="goals"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Goals & Aspirations (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="e.g., Become a software engineer, Start my own tech company, Work at Google..."
+                        {...field} 
+                        className="resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="personalityType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Personality Type (Optional)</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your personality type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="creative">Creative - Artistic & Innovative</SelectItem>
+                        <SelectItem value="logical">Logical - Analytical & Systematic</SelectItem>
+                        <SelectItem value="leader">Leader - Confident & Decisive</SelectItem>
+                        <SelectItem value="social">Social - Outgoing & Collaborative</SelectItem>
+                        <SelectItem value="adventurous">Adventurous - Bold & Curious</SelectItem>
+                        <SelectItem value="harmonious">Harmonious - Peaceful & Balanced</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
 
