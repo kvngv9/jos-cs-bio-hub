@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -15,7 +15,9 @@ import {
   Camera,
   Save,
   Plus,
-  Trash2
+  Trash2,
+  Upload,
+  X
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -41,6 +43,7 @@ const biodataSchema = z.object({
   stateOfOrigin: z.string().min(2, "State of origin is required"),
   lga: z.string().min(2, "Local Government Area is required"),
   address: z.string().min(10, "Address must be at least 10 characters"),
+  profileImage: z.string().optional(),
   
   // Academic Information
   studentId: z.string().min(1, "Student ID is required"),
@@ -91,6 +94,7 @@ export function BiodataForm() {
   const [projects, setProjects] = useState<Project[]>([])
   const [experiences, setExperiences] = useState<Experience[]>([])
   const [profileImage, setProfileImage] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const form = useForm<BiodataFormData>({
     resolver: zodResolver(biodataSchema),
@@ -104,12 +108,17 @@ export function BiodataForm() {
       gender: "Male",
       nationality: "Nigerian",
       stateOfOrigin: "",
+      lga: "",
       address: "",
+      profileImage: "",
       studentId: "",
       level: "100",
       cgpa: "",
       entryYear: new Date().getFullYear().toString(),
       expectedGraduation: (new Date().getFullYear() + 4).toString(),
+      hobbies: "",
+      goals: "",
+      personalityType: "logical",
       emergencyName: "",
       emergencyPhone: "",
       emergencyRelationship: "",
@@ -117,18 +126,19 @@ export function BiodataForm() {
   })
 
   const onSubmit = (data: BiodataFormData) => {
+    // Include additional data
     const completeData = {
       ...data,
       skills,
       projects,
       experiences,
-      profileImage,
+      profileImage
     }
-    
-    console.log("Bio-data submitted:", completeData)
+
+    console.log(completeData)
     toast({
-      title: "Bio-data Saved Successfully!",
-      description: "Your profile information has been updated.",
+      title: "Bio-data submitted successfully!",
+      description: "Your information has been saved to the system.",
     })
   }
 
@@ -136,52 +146,74 @@ export function BiodataForm() {
     setSkills([...skills, { name: "", level: "Beginner" }])
   }
 
-  const removeSkill = (index: number) => {
-    setSkills(skills.filter((_, i) => i !== index))
+  const updateSkill = (index: number, field: keyof Skill, value: string) => {
+    const updatedSkills = skills.map((skill, i) => 
+      i === index ? { ...skill, [field]: value } : skill
+    )
+    setSkills(updatedSkills)
   }
 
-  const updateSkill = (index: number, field: keyof Skill, value: string) => {
-    const updatedSkills = [...skills]
-    updatedSkills[index] = { ...updatedSkills[index], [field]: value }
-    setSkills(updatedSkills)
+  const removeSkill = (index: number) => {
+    setSkills(skills.filter((_, i) => i !== index))
   }
 
   const addProject = () => {
     setProjects([...projects, { title: "", description: "", technologies: "", year: "" }])
   }
 
-  const removeProject = (index: number) => {
-    setProjects(projects.filter((_, i) => i !== index))
+  const updateProject = (index: number, field: keyof Project, value: string) => {
+    const updatedProjects = projects.map((project, i) => 
+      i === index ? { ...project, [field]: value } : project
+    )
+    setProjects(updatedProjects)
   }
 
-  const updateProject = (index: number, field: keyof Project, value: string) => {
-    const updatedProjects = [...projects]
-    updatedProjects[index] = { ...updatedProjects[index], [field]: value }
-    setProjects(updatedProjects)
+  const removeProject = (index: number) => {
+    setProjects(projects.filter((_, i) => i !== index))
   }
 
   const addExperience = () => {
     setExperiences([...experiences, { company: "", role: "", duration: "", description: "" }])
   }
 
-  const removeExperience = (index: number) => {
-    setExperiences(experiences.filter((_, i) => i !== index))
+  const updateExperience = (index: number, field: keyof Experience, value: string) => {
+    const updatedExperiences = experiences.map((experience, i) => 
+      i === index ? { ...experience, [field]: value } : experience
+    )
+    setExperiences(updatedExperiences)
   }
 
-  const updateExperience = (index: number, field: keyof Experience, value: string) => {
-    const updatedExperiences = [...experiences]
-    updatedExperiences[index] = { ...updatedExperiences[index], [field]: value }
-    setExperiences(updatedExperiences)
+  const removeExperience = (index: number) => {
+    setExperiences(experiences.filter((_, i) => i !== index))
   }
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 5MB",
+          variant: "destructive"
+        })
+        return
+      }
+      
       const reader = new FileReader()
       reader.onload = (e) => {
-        setProfileImage(e.target?.result as string)
+        const imageData = e.target?.result as string
+        setProfileImage(imageData)
+        form.setValue('profileImage', imageData)
       }
       reader.readAsDataURL(file)
+    }
+  }
+
+  const removeImage = () => {
+    setProfileImage(null)
+    form.setValue('profileImage', '')
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
     }
   }
 
@@ -215,21 +247,32 @@ export function BiodataForm() {
                     <User className="h-12 w-12 text-muted-foreground" />
                   )}
                 </div>
-                <div>
+                <div className="space-y-2">
                   <input
+                    ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
                     className="hidden"
                     id="profile-upload"
                   />
-                  <label htmlFor="profile-upload">
-                    <Button type="button" variant="outline" asChild className="cursor-pointer">
-                      <span>Upload Photo</span>
-                    </Button>
-                  </label>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Recommended: 400x400px, max 5MB
+                  <div className="flex gap-2">
+                    <label htmlFor="profile-upload">
+                      <Button type="button" variant="outline" asChild className="cursor-pointer">
+                        <span>
+                          <Upload className="mr-2 h-4 w-4" />
+                          Upload Photo
+                        </span>
+                      </Button>
+                    </label>
+                    {profileImage && (
+                      <Button type="button" variant="outline" onClick={removeImage} size="sm">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Upload a profile picture (max 5MB, JPG/PNG)
                   </p>
                 </div>
               </div>
@@ -244,173 +287,185 @@ export function BiodataForm() {
                 Personal Information
               </CardTitle>
               <CardDescription>
-                Your basic personal details
+                Basic personal details and identification
               </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your first name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your last name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="middleName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Middle Name (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your middle name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gender</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select gender" />
-                        </SelectTrigger>
+                        <Input placeholder="Enter first name" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Male">Male</SelectItem>
-                        <SelectItem value="Female">Female</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="dateOfBirth"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Date of Birth</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="nationality"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nationality</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your nationality" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="stateOfOrigin"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>State of Origin</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your state of origin" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lga"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Local Government Area</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your LGA" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter last name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="middleName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Middle Name (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter middle name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input placeholder="Enter email address" className="pl-10" {...field} />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input placeholder="Enter phone number" className="pl-10" {...field} />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="dateOfBirth"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Birth</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input type="date" className="pl-10" {...field} />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gender</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="nationality"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nationality</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter nationality" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="stateOfOrigin"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>State of Origin</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter state of origin" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lga"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Local Government Area</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter LGA" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
                 name="address"
                 render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Enter your full address" 
-                        className="resize-none" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Contact Information */}
-          <Card className="card-academic animate-slide-up">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Mail className="h-5 w-5 text-primary" />
-                Contact Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email Address</FormLabel>
+                    <FormLabel>Residential Address</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="your.email@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+234 XXX XXX XXXX" {...field} />
+                      <div className="relative">
+                        <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Textarea 
+                          placeholder="Enter complete residential address" 
+                          className="pl-10 min-h-[80px]" 
+                          {...field} 
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -426,87 +481,180 @@ export function BiodataForm() {
                 <GraduationCap className="h-5 w-5 text-primary" />
                 Academic Information
               </CardTitle>
+              <CardDescription>
+                Your academic details and university information
+              </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6 md:grid-cols-2">
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="studentId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Student ID/Matriculation Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter student ID" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="level"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Current Level</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select level" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="100">100 Level</SelectItem>
+                          <SelectItem value="200">200 Level</SelectItem>
+                          <SelectItem value="300">300 Level</SelectItem>
+                          <SelectItem value="400">400 Level</SelectItem>
+                          <SelectItem value="500">500 Level</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="cgpa"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Current CGPA (Optional)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          step="0.01" 
+                          min="0" 
+                          max="5" 
+                          placeholder="0.00" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="entryYear"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Entry Year</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          placeholder="2024" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="expectedGraduation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Expected Graduation</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          placeholder="2028" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Additional Information */}
+          <Card className="card-academic animate-slide-up">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-primary" />
+                Additional Information
+              </CardTitle>
+              <CardDescription>
+                Tell us more about yourself
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="hobbies"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Hobbies & Interests</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Tell us about your hobbies and interests..." 
+                          className="min-h-[100px]" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="goals"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Career Goals & Aspirations</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Share your career goals and aspirations..." 
+                          className="min-h-[100px]" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
-                name="studentId"
+                name="personalityType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Student ID/Matric Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., CS/2020/001" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="level"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Current Level</FormLabel>
+                    <FormLabel>Personality Type</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select level" />
+                          <SelectValue placeholder="Select your personality type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="100">100 Level</SelectItem>
-                        <SelectItem value="200">200 Level</SelectItem>
-                        <SelectItem value="300">300 Level</SelectItem>
-                        <SelectItem value="400">400 Level</SelectItem>
-                        <SelectItem value="500">500 Level</SelectItem>
+                        <SelectItem value="creative">Creative - Artistic and innovative</SelectItem>
+                        <SelectItem value="logical">Logical - Analytical and systematic</SelectItem>
+                        <SelectItem value="leader">Leader - Natural leadership qualities</SelectItem>
+                        <SelectItem value="social">Social - People-oriented and collaborative</SelectItem>
+                        <SelectItem value="adventurous">Adventurous - Risk-taking and exploratory</SelectItem>
+                        <SelectItem value="harmonious">Harmonious - Peaceful and balanced</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-                <FormField
-                control={form.control}
-                name="cgpa"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Current CGPA (Optional)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="e.g., 4.50 (optional)" 
-                        type="number" 
-                        step="0.01" 
-                        min="0" 
-                        max="5.00" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="entryYear"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Year of Entry</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., 2020" type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="expectedGraduation"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Expected Graduation Year</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., 2024" type="number" {...field} />
-                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -519,26 +667,26 @@ export function BiodataForm() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Code className="h-5 w-5 text-primary" />
-                Technical Skills
+                Skills & Competencies
               </CardTitle>
               <CardDescription>
-                Add your programming languages, frameworks, and technical competencies
+                Add your technical and soft skills
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {skills.map((skill, index) => (
-                <div key={index} className="flex gap-4 items-end">
+                <div key={index} className="flex gap-2 items-end">
                   <div className="flex-1">
                     <Input
-                      placeholder="e.g., JavaScript, Python, React"
+                      placeholder="Skill name (e.g., JavaScript, Leadership)"
                       value={skill.name}
-                      onChange={(e) => updateSkill(index, "name", e.target.value)}
+                      onChange={(e) => updateSkill(index, 'name', e.target.value)}
                     />
                   </div>
-                  <div className="w-32">
+                  <div className="w-40">
                     <Select
                       value={skill.level}
-                      onValueChange={(value) => updateSkill(index, "level", value as Skill["level"])}
+                      onValueChange={(value: any) => updateSkill(index, 'level', value)}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -551,18 +699,18 @@ export function BiodataForm() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
                     onClick={() => removeSkill(index)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               ))}
-              <Button type="button" variant="outline" onClick={addSkill} className="w-full">
-                <Plus className="h-4 w-4 mr-2" />
+              <Button type="button" variant="outline" onClick={addSkill}>
+                <Plus className="mr-2 h-4 w-4" />
                 Add Skill
               </Button>
             </CardContent>
@@ -572,181 +720,56 @@ export function BiodataForm() {
           <Card className="card-academic animate-slide-up">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-primary" />
-                Projects & Achievements
+                <Briefcase className="h-5 w-5 text-primary" />
+                Projects
               </CardTitle>
+              <CardDescription>
+                Showcase your academic and personal projects
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {projects.map((project, index) => (
-                <div key={index} className="p-4 border rounded-lg space-y-4">
+                <div key={index} className="p-4 border border-border rounded-lg space-y-3">
                   <div className="flex justify-between items-start">
                     <h4 className="font-medium">Project {index + 1}</h4>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
                       onClick={() => removeProject(index)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <Input
-                      placeholder="Project Title"
+                      placeholder="Project title"
                       value={project.title}
-                      onChange={(e) => updateProject(index, "title", e.target.value)}
+                      onChange={(e) => updateProject(index, 'title', e.target.value)}
                     />
                     <Input
-                      placeholder="Year"
+                      placeholder="Year completed"
                       value={project.year}
-                      onChange={(e) => updateProject(index, "year", e.target.value)}
+                      onChange={(e) => updateProject(index, 'year', e.target.value)}
                     />
                   </div>
                   <Input
-                    placeholder="Technologies Used (e.g., React, Node.js, MongoDB)"
+                    placeholder="Technologies used (e.g., React, Python, MySQL)"
                     value={project.technologies}
-                    onChange={(e) => updateProject(index, "technologies", e.target.value)}
+                    onChange={(e) => updateProject(index, 'technologies', e.target.value)}
                   />
                   <Textarea
-                    placeholder="Project Description"
+                    placeholder="Project description..."
                     value={project.description}
-                    onChange={(e) => updateProject(index, "description", e.target.value)}
-                    className="resize-none"
+                    onChange={(e) => updateProject(index, 'description', e.target.value)}
+                    className="min-h-[80px]"
                   />
                 </div>
               ))}
-              <Button type="button" variant="outline" onClick={addProject} className="w-full">
-                <Plus className="h-4 w-4 mr-2" />
+              <Button type="button" variant="outline" onClick={addProject}>
+                <Plus className="mr-2 h-4 w-4" />
                 Add Project
               </Button>
-            </CardContent>
-          </Card>
-
-          {/* Experience Section */}
-          <Card className="card-academic animate-slide-up">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-primary" />
-                Work Experience & Internships
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {experiences.map((experience, index) => (
-                <div key={index} className="p-4 border rounded-lg space-y-4">
-                  <div className="flex justify-between items-start">
-                    <h4 className="font-medium">Experience {index + 1}</h4>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => removeExperience(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <Input
-                      placeholder="Company/Organization"
-                      value={experience.company}
-                      onChange={(e) => updateExperience(index, "company", e.target.value)}
-                    />
-                    <Input
-                      placeholder="Role/Position"
-                      value={experience.role}
-                      onChange={(e) => updateExperience(index, "role", e.target.value)}
-                    />
-                  </div>
-                  <Input
-                    placeholder="Duration (e.g., June 2023 - August 2023)"
-                    value={experience.duration}
-                    onChange={(e) => updateExperience(index, "duration", e.target.value)}
-                  />
-                  <Textarea
-                    placeholder="Description of responsibilities and achievements"
-                    value={experience.description}
-                    onChange={(e) => updateExperience(index, "description", e.target.value)}
-                    className="resize-none"
-                  />
-                </div>
-              ))}
-              <Button type="button" variant="outline" onClick={addExperience} className="w-full">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Experience
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Personal Development */}
-          <Card className="card-academic animate-slide-up">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5 text-primary" />
-                Personal Development
-              </CardTitle>
-              <CardDescription>
-                Share your hobbies, goals, and personality type
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="hobbies"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Hobbies & Interests (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="e.g., Reading, Football, Music, Photography, Gaming..."
-                        {...field} 
-                        className="resize-none"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="goals"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Goals & Aspirations (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="e.g., Become a software engineer, Start my own tech company, Work at Google..."
-                        {...field} 
-                        className="resize-none"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="personalityType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Personality Type (Optional)</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your personality type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="creative">Creative - Artistic & Innovative</SelectItem>
-                        <SelectItem value="logical">Logical - Analytical & Systematic</SelectItem>
-                        <SelectItem value="leader">Leader - Confident & Decisive</SelectItem>
-                        <SelectItem value="social">Social - Outgoing & Collaborative</SelectItem>
-                        <SelectItem value="adventurous">Adventurous - Bold & Curious</SelectItem>
-                        <SelectItem value="harmonious">Harmonious - Peaceful & Balanced</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </CardContent>
           </Card>
 
@@ -757,39 +780,44 @@ export function BiodataForm() {
                 <Phone className="h-5 w-5 text-primary" />
                 Emergency Contact
               </CardTitle>
+              <CardDescription>
+                Emergency contact information
+              </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="emergencyName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contact Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Full name of emergency contact" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="emergencyPhone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contact Phone</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+234 XXX XXX XXXX" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="emergencyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Emergency Contact Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="emergencyPhone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Emergency Contact Phone</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter phone number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="emergencyRelationship"
                 render={({ field }) => (
-                  <FormItem className="md:col-span-2">
+                  <FormItem>
                     <FormLabel>Relationship</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., Parent, Guardian, Sibling" {...field} />
@@ -806,10 +834,10 @@ export function BiodataForm() {
             <Button 
               type="submit" 
               size="lg" 
-              className="btn-university px-8 py-3 text-lg font-semibold"
+              className="btn-university px-12 py-3 text-lg"
             >
-              <Save className="h-5 w-5 mr-2" />
-              Save Bio-Data
+              <Save className="mr-2 h-5 w-5" />
+              Submit Bio-Data
             </Button>
           </div>
         </form>

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Header } from "@/components/Header"
 import { AnimatedBackground } from "@/components/AnimatedBackground"
+import { HeroBanner } from "@/components/HeroBanner"
 
 const Index = () => {
   const features = [
@@ -58,8 +59,7 @@ const Index = () => {
       <AnimatedBackground />
       <Header />
       
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 px-4">
+      <HeroBanner />
         <div className="absolute inset-0 bg-gradient-academic opacity-50" />
         <div className="container relative mx-auto text-center space-y-8 animate-fade-in">
           <div className="space-y-4">
@@ -106,7 +106,6 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </section>
 
       {/* Stats Section */}
       <section className="py-16 px-4 bg-muted/30">

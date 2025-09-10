@@ -1,13 +1,16 @@
 import React, { useState } from "react"
-import { QrCode, Phone, Mail, MapPin, Trophy, Code, ExternalLink, Share2 } from "lucide-react"
+import { QrCode, Phone, Mail, MapPin, Trophy, Code, ExternalLink, Share2, Languages, User } from "lucide-react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { generateStudentQR, generateVCardQR } from "@/utils/qrGenerator"
 import { getPersonalityFromSkills } from "@/utils/personalityColors"
+import { generateAvatarFromInitials } from "@/utils/avatarGenerator"
+import { translateStudentData, languageNames, type Language } from "@/utils/translation"
 
 interface Student {
   id: string
@@ -34,6 +37,9 @@ export function StudentCard({ student, className }: StudentCardProps) {
   const [qrCode, setQrCode] = useState<string | null>(null)
   const [vCardQR, setVCardQR] = useState<string | null>(null)
   const [showQR, setShowQR] = useState(false)
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>('en')
+  
+  const translatedStudent = translateStudentData(student, selectedLanguage)
   
   const personality = getPersonalityFromSkills(student.skills)
   
@@ -105,7 +111,10 @@ export function StudentCard({ student, className }: StudentCardProps) {
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="h-16 w-16 border-2" style={{ borderColor: personality.color }}>
-              <AvatarImage src={student.profileImage} />
+              <AvatarImage 
+                src={student.profileImage || generateAvatarFromInitials(student.name)} 
+                alt={student.name}
+              />
               <AvatarFallback className="text-lg font-semibold">
                 {student.name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
@@ -128,10 +137,27 @@ export function StudentCard({ student, className }: StudentCardProps) {
           </Button>
         </div>
         
+        {/* Language Selector */}
+        <div className="mt-2 flex items-center gap-2">
+          <Languages className="h-3 w-3 text-muted-foreground" />
+          <Select value={selectedLanguage} onValueChange={(value: Language) => setSelectedLanguage(value)}>
+            <SelectTrigger className="h-6 text-xs border-none p-1">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(languageNames).map(([code, name]) => (
+                <SelectItem key={code} value={code}>{name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Profile Completion */}
         <div className="mt-3 space-y-1">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-muted-foreground">Profile Completion</span>
+            <span className="text-xs text-muted-foreground">
+              {translatedStudent._translations?.profileCompletionLabel || 'Profile Completion'}
+            </span>
             <Badge className={`${badge.color} text-white text-xs`}>
               {badge.text}
             </Badge>
