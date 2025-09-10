@@ -1,6 +1,7 @@
-import { GraduationCap, User, Settings } from "lucide-react"
+import { GraduationCap, User, Settings, Home, Users, FileText, Quote, Megaphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { Link, useLocation } from "react-router-dom"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +11,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export function Header() {
+  const location = useLocation()
+  
+  const navItems = [
+    { path: '/', icon: Home, label: 'Home' },
+    { path: '/dashboard', icon: Users, label: 'Dashboard' },
+    { path: '/biodata-form', icon: FileText, label: 'Bio-Data' },
+    { path: '/legacy-wall', icon: Quote, label: 'Legacy Wall' },
+    { path: '/announcements', icon: Megaphone, label: 'Announcements' },
+  ]
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
@@ -25,6 +36,22 @@ export function Header() {
             <p className="text-xs text-muted-foreground">Bio-Data Management System</p>
           </div>
         </div>
+
+        {/* Navigation Menu */}
+        <nav className="hidden md:flex items-center space-x-1">
+          {navItems.map((item) => (
+            <Link key={item.path} to={item.path}>
+              <Button 
+                variant={location.pathname === item.path ? "default" : "ghost"} 
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Button>
+            </Link>
+          ))}
+        </nav>
 
         {/* Navigation Actions */}
         <div className="flex items-center space-x-3">

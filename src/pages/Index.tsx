@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { GraduationCap, Users, FileText, TrendingUp, ArrowRight, Star } from "lucide-react"
+import { GraduationCap, Users, FileText, TrendingUp, ArrowRight, Star, Quote, Megaphone, Heart, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -31,6 +31,18 @@ const Index = () => {
       title: "Academic Tracking",
       description: "Monitor student progress and academic achievements",
       color: "text-warning"
+    },
+    {
+      icon: Quote,
+      title: "Legacy Wall",
+      description: "Share wisdom and quotes that inspire future generations",
+      color: "text-purple-500"
+    },
+    {
+      icon: Megaphone,
+      title: "Announcements",
+      description: "Stay updated with department news, events, and exam schedules",
+      color: "text-blue-500"
     }
   ]
 
@@ -72,11 +84,26 @@ const Index = () => {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link to="/dashboard">
-              <Button variant="outline" size="lg" className="px-8 py-3 text-lg">
-                View Dashboard
-              </Button>
-            </Link>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Link to="/dashboard">
+                <Button variant="outline" size="lg" className="px-6 py-3">
+                  <Users className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
+              </Link>
+              <Link to="/legacy-wall">
+                <Button variant="outline" size="lg" className="px-6 py-3">
+                  <Quote className="mr-2 h-4 w-4" />
+                  Legacy Wall
+                </Button>
+              </Link>
+              <Link to="/announcements">
+                <Button variant="outline" size="lg" className="px-6 py-3">
+                  <Megaphone className="mr-2 h-4 w-4" />
+                  Announcements
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -110,7 +137,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 animate-slide-up">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 animate-slide-up">
             {features.map((feature, index) => (
               <Card key={index} className="card-academic group hover:shadow-medium transition-all duration-300">
                 <CardHeader className="text-center">

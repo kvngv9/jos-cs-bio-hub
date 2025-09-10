@@ -39,6 +39,7 @@ const biodataSchema = z.object({
   gender: z.enum(["Male", "Female", "Other"]),
   nationality: z.string().min(2, "Nationality is required"),
   stateOfOrigin: z.string().min(2, "State of origin is required"),
+  lga: z.string().min(2, "Local Government Area is required"),
   address: z.string().min(10, "Address must be at least 10 characters"),
   
   // Academic Information
@@ -342,6 +343,19 @@ export function BiodataForm() {
                     <FormLabel>State of Origin</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter your state of origin" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lga"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Local Government Area</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your LGA" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

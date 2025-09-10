@@ -10,6 +10,8 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import BioDataFormPage from "./pages/BioDataForm";
 import NotFound from "./pages/NotFound";
+import { LegacyWall } from "./components/LegacyWall";
+import { Announcements } from "./components/Announcements";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/biodata-form" element={<BioDataFormPage />} />
+              <Route path="/legacy-wall" element={<LegacyWall />} />
+              <Route path="/announcements" element={<Announcements />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
