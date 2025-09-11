@@ -126,20 +126,32 @@ export function BiodataForm() {
   })
 
   const onSubmit = (data: BiodataFormData) => {
-    // Include additional data
-    const completeData = {
+    const studentData = {
       ...data,
-      skills,
+      id: Date.now().toString(),
+      name: `${data.firstName} ${data.lastName}`,
+      profilePicture: profileImage || generateStudentAvatar(`${data.firstName} ${data.lastName}`),
+      submittedAt: new Date().toISOString(),
+      approved: false,
+      skills: skills.map(skill => skill.name).filter(name => name.trim() !== ''),
       projects,
-      experiences,
-      profileImage
+      experiences
     }
 
-    console.log(completeData)
+    addStudent(studentData)
+    console.log("Student Bio-Data Submitted:", studentData)
+
     toast({
-      title: "Bio-data submitted successfully!",
-      description: "Your information has been saved to the system.",
+      title: "Profile Submitted Successfully!",
+      description: "Your bio-data has been submitted for review. You'll be notified once approved.",
     })
+
+    // Reset form
+    form.reset()
+    setSkills([])
+    setProjects([])
+    setExperiences([])
+    setProfileImage(null)
   }
 
   const addSkill = () => {

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 
 export function HeroBanner() {
   return (
-    <section className="relative overflow-hidden py-20 px-4 bg-gradient-to-br from-background via-primary/5 to-secondary/10">
+    <section className="relative overflow-hidden py-12 px-4 bg-gradient-to-br from-background via-primary/5 to-secondary/10">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         <div className="floating-particle w-3 h-3" style={{ top: '20%', left: '10%', animationDelay: '0s' }} />
@@ -27,70 +27,69 @@ export function HeroBanner() {
         </div>
 
         {/* Main Heading */}
-        <div className="space-y-6">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-primary bg-clip-text text-transparent leading-tight">
+        <div className="space-y-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent leading-tight">
             Student Bio-Data
             <br />
             <span className="relative">
               Management System
-              <Sparkles className="absolute -top-2 -right-8 h-8 w-8 text-warning animate-pulse" />
+              <Sparkles className="absolute -top-1 -right-6 h-6 w-6 text-warning animate-pulse" />
             </span>
           </h1>
           
-          <p className="text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             A comprehensive digital platform for managing student information, academic records, 
-            and personnel data for the Computer Science Department at University of Jos. 
-            Join our digital transformation journey today.
+            and personnel data for the Computer Science Department at University of Jos.
           </p>
         </div>
 
         {/* Stats Preview */}
-        <div className="flex flex-wrap justify-center gap-6 py-8">
+        <div className="flex flex-wrap justify-center gap-4 py-6">
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary">500+</div>
-            <div className="text-sm text-muted-foreground">Active Students</div>
+            <div className="text-2xl font-bold text-primary">500+</div>
+            <div className="text-xs text-muted-foreground">Active Students</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-success">95%</div>
-            <div className="text-sm text-muted-foreground">Success Rate</div>
+            <div className="text-2xl font-bold text-success">95%</div>
+            <div className="text-xs text-muted-foreground">Success Rate</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-info">10K+</div>
-            <div className="text-sm text-muted-foreground">Data Records</div>
+            <div className="text-2xl font-bold text-info">10K+</div>
+            <div className="text-xs text-muted-foreground">Data Records</div>
           </div>
         </div>
         
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
           <Link to="/biodata-form">
-            <Button size="lg" className="btn-university px-8 py-4 text-lg font-semibold">
-              <Star className="mr-2 h-5 w-5" />
+            <Button size="lg" className="btn-university px-6 py-3 text-base font-semibold">
+              <Star className="mr-2 h-4 w-4" />
               Register Bio-Data
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
           
           <Link to="/dashboard">
-            <Button variant="outline" size="lg" className="px-8 py-4 text-lg bg-background/80 backdrop-blur-sm border-primary/30 hover:bg-primary/10">
-              <Users className="mr-2 h-5 w-5" />
+            <Button variant="outline" size="lg" className="px-6 py-3 text-base bg-background/80 backdrop-blur-sm border-primary/30 hover:bg-primary/10">
+              <Users className="mr-2 h-4 w-4" />
               View Dashboard
             </Button>
           </Link>
         </div>
 
         {/* Trust Indicators */}
-        <div className="flex flex-wrap justify-center items-center gap-8 pt-8 text-muted-foreground">
+        <div className="flex flex-wrap justify-center items-center gap-6 pt-4 text-muted-foreground">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-            <span className="text-sm">Secure & Private</span>
+            <span className="text-xs">Secure & Private</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-            <span className="text-sm">Real-time Updates</span>
+            <span className="text-xs">Real-time Updates</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-warning rounded-full animate-pulse" />
-            <span className="text-sm">24/7 Available</span>
+            <span className="text-xs">24/7 Available</span>
           </div>
         </div>
       </div>

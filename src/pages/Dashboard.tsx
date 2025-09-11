@@ -1,17 +1,15 @@
-import { useState, useMemo, useCallback, memo } from "react"
-import { Users, GraduationCap, Trophy, TrendingUp, Plus, Search, Filter, X, Mail, Phone, MapPin, Download, Grid, List } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useMemo, useCallback } from "react"
+import { Users, GraduationCap, Trophy, Plus, Search, Download, Grid, List, Filter } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useNavigate } from "react-router-dom"
 import { useAdmin } from "@/hooks/useAdmin"
-import { AdminDialog } from "@/components/AdminDialog"
+import { useStudentAuth } from "@/hooks/useStudentAuth"
 import { useToast } from "@/hooks/use-toast"
 import { StudentCard } from "@/components/StudentCard"
+import { Header } from "@/components/Header"
 
 interface Student {
   id: string
@@ -320,18 +318,6 @@ const mockStudents: Student[] = [
   }
 ]
 
-export default function Dashboard() {
-  const [students] = useState<Student[]>(mockStudents)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterLevel, setFilterLevel] = useState<string>("all")
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [adminDialogOpen, setAdminDialogOpen] = useState(false)
-  const [pendingAdminAction, setPendingAdminAction] = useState<() => void>(() => {})
-  const [adminFeature, setAdminFeature] = useState("")
-  
-  const navigate = useNavigate()
-  const { isAdmin } = useAdmin()
-  const { toast } = useToast()
 
   const filteredStudents = useMemo(() => {
     return students.filter(student => {
@@ -353,10 +339,6 @@ export default function Dashboard() {
   const requireAdminAccess = useCallback((action: () => void, featureName: string) => {
     if (isAdmin) {
       action()
-    } else {
-      setPendingAdminAction(() => action)
-      setAdminFeature(featureName)
-      setAdminDialogOpen(true)
     }
   }, [isAdmin])
 

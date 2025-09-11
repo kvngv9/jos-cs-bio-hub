@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { generateStudentQR, generateVCardQR } from "@/utils/qrGenerator"
 import { getPersonalityFromSkills } from "@/utils/personalityColors"
 import { generateAvatarFromInitials } from "@/utils/avatarGenerator"
-import { translateStudentData, languageNames, type Language } from "@/utils/translation"
+
 
 interface Student {
   id: string
@@ -29,7 +29,7 @@ interface Student {
 }
 
 interface StudentCardProps {
-  student: Student
+  student: any
   className?: string
 }
 
@@ -37,9 +37,6 @@ export function StudentCard({ student, className }: StudentCardProps) {
   const [qrCode, setQrCode] = useState<string | null>(null)
   const [vCardQR, setVCardQR] = useState<string | null>(null)
   const [showQR, setShowQR] = useState(false)
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>('en')
-  
-  const translatedStudent = translateStudentData(student, selectedLanguage)
   
   const personality = getPersonalityFromSkills(student.skills)
   
@@ -137,27 +134,11 @@ export function StudentCard({ student, className }: StudentCardProps) {
           </Button>
         </div>
         
-        {/* Language Selector */}
-        <div className="mt-2 flex items-center gap-2">
-          <Languages className="h-3 w-3 text-muted-foreground" />
-          <Select value={selectedLanguage} onValueChange={(value: Language) => setSelectedLanguage(value)}>
-            <SelectTrigger className="h-6 text-xs border-none p-1">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(languageNames).map(([code, name]) => (
-                <SelectItem key={code} value={code}>{name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
 
         {/* Profile Completion */}
         <div className="mt-3 space-y-1">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-muted-foreground">
-              {translatedStudent._translations?.profileCompletionLabel || 'Profile Completion'}
-            </span>
+            <span className="text-xs text-muted-foreground">Profile Completion</span>
             <Badge className={`${badge.color} text-white text-xs`}>
               {badge.text}
             </Badge>

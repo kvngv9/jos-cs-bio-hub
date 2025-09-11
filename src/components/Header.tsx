@@ -1,7 +1,10 @@
-import { GraduationCap, User, Settings, Home, Users, FileText, Quote, Megaphone } from "lucide-react"
+import { GraduationCap, User, Home, Users, FileText, Quote, Megaphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { Link, useLocation } from "react-router-dom"
+import { AdminPanel } from "./AdminPanel"
+import { StudentLogin } from "./StudentLogin"
+import { useAdmin } from "@/hooks/useAdmin"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +15,7 @@ import {
 
 export function Header() {
   const location = useLocation()
+  const { isAdmin, logout } = useAdmin()
   
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
@@ -20,6 +24,10 @@ export function Header() {
     { path: '/legacy-wall', icon: Quote, label: 'Legacy Wall' },
     { path: '/announcements', icon: Megaphone, label: 'Announcements' },
   ]
+
+  const handleLogout = () => {
+    logout()
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -55,6 +63,13 @@ export function Header() {
 
         {/* Navigation Actions */}
         <div className="flex items-center space-x-3">
+          <StudentLogin />
+          {isAdmin && (
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              Logout Admin
+            </Button>
+          )}
+          <AdminPanel />
           <ThemeToggle />
           
           {/* User Menu */}
@@ -65,19 +80,9 @@ export function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-popover/95 backdrop-blur">
-              <DropdownMenuItem 
-                className="cursor-pointer"
-                onClick={() => alert('Profile Management\n\nAdmin Profile:\nName: Dr. Samuel Adebayo\nRole: Head of Department\nEmail: samuel.adebayo@unijos.edu.ng\nDepartment: Computer Science\nOffice: Block B, Room 205')}
-              >
+              <DropdownMenuItem className="cursor-pointer">
                 <User className="mr-2 h-4 w-4" />
                 View Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                className="cursor-pointer"
-                onClick={() => alert('System Settings\n\n• Theme: Dark/Light Mode\n• Notifications: Enabled\n• Auto-backup: Daily\n• Language: English\n• Time Zone: GMT+1 (Lagos)\n• Session Timeout: 30 minutes\n• Export Format: PDF/Excel')}
-              >
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer text-destructive">

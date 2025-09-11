@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Header } from "@/components/Header"
 import { AnimatedBackground } from "@/components/AnimatedBackground"
 import { HeroBanner } from "@/components/HeroBanner"
+import { Footer } from "@/components/Footer"
 
 const Index = () => {
   const features = [
@@ -60,52 +61,6 @@ const Index = () => {
       <Header />
       
       <HeroBanner />
-        <div className="absolute inset-0 bg-gradient-academic opacity-50" />
-        <div className="container relative mx-auto text-center space-y-8 animate-fade-in">
-          <div className="space-y-4">
-            <Badge variant="outline" className="px-4 py-2 text-sm font-medium bg-primary/10 border-primary/20">
-              University of Jos - Computer Science Department
-            </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Student Bio-Data
-              <br />
-              Management System
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              A comprehensive digital platform for managing student information, academic records, 
-              and personnel data for the Computer Science Department at University of Jos.
-            </p>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link to="/biodata-form">
-              <Button size="lg" className="btn-university px-8 py-3 text-lg">
-                Register Bio-Data
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <div className="flex flex-wrap gap-3 justify-center">
-              <Link to="/dashboard">
-                <Button variant="outline" size="lg" className="px-6 py-3">
-                  <Users className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Button>
-              </Link>
-              <Link to="/legacy-wall">
-                <Button variant="outline" size="lg" className="px-6 py-3">
-                  <Quote className="mr-2 h-4 w-4" />
-                  Legacy Wall
-                </Button>
-              </Link>
-              <Link to="/announcements">
-                <Button variant="outline" size="lg" className="px-6 py-3">
-                  <Megaphone className="mr-2 h-4 w-4" />
-                  Announcements
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
 
       {/* Stats Section */}
       <section className="py-16 px-4 bg-muted/30">
@@ -185,23 +140,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 bg-muted/50">
-        <div className="container mx-auto text-center space-y-4">
-          <div className="flex items-center justify-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-primary">
-              <GraduationCap className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-bold text-lg">UniJos CS Portal</span>
-          </div>
-          <p className="text-muted-foreground">
-            Computer Science Department, University of Jos
-          </p>
-          <p className="text-sm text-muted-foreground">
-            © 2024 University of Jos. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -33,7 +33,7 @@ export const AdminProvider = ({ children }: AdminProviderProps) => {
   }, [])
 
   const login = (password: string): boolean => {
-    if (password === "otunola") {
+    if (password === "123456") {
       setIsAdmin(true)
       sessionStorage.setItem("admin_session", "authenticated")
       return true
