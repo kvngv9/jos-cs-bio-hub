@@ -29,6 +29,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
+import { generateAvatarFromInitials } from "@/utils/avatarGenerator"
 
 const biodataSchema = z.object({
   // Personal Information
@@ -130,7 +131,7 @@ export function BiodataForm() {
       ...data,
       id: Date.now().toString(),
       name: `${data.firstName} ${data.lastName}`,
-      profilePicture: profileImage || generateStudentAvatar(`${data.firstName} ${data.lastName}`),
+      profilePicture: profileImage || generateAvatarFromInitials(`${data.firstName} ${data.lastName}`),
       submittedAt: new Date().toISOString(),
       approved: false,
       skills: skills.map(skill => skill.name).filter(name => name.trim() !== ''),
@@ -138,7 +139,10 @@ export function BiodataForm() {
       experiences
     }
 
-    addStudent(studentData)
+    // Store student data in localStorage for now
+    const existingStudents = JSON.parse(localStorage.getItem('students') || '[]')
+    existingStudents.push(studentData)
+    localStorage.setItem('students', JSON.stringify(existingStudents))
     console.log("Student Bio-Data Submitted:", studentData)
 
     toast({

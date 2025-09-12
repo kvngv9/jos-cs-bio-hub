@@ -1,15 +1,18 @@
 import { useState, useMemo, useCallback } from "react"
 import { Users, GraduationCap, Trophy, Plus, Search, Download, Grid, List, Filter } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { useNavigate } from "react-router-dom"
 import { useAdmin } from "@/hooks/useAdmin"
 import { useStudentAuth } from "@/hooks/useStudentAuth"
 import { useToast } from "@/hooks/use-toast"
 import { StudentCard } from "@/components/StudentCard"
 import { Header } from "@/components/Header"
+import { AdminDialog } from "@/components/AdminDialog"
 
 interface Student {
   id: string
@@ -318,6 +321,17 @@ const mockStudents: Student[] = [
   }
 ]
 
+export default function Dashboard() {
+  const navigate = useNavigate()
+  const { isAdmin } = useAdmin()
+  const { toast } = useToast()
+  const [searchTerm, setSearchTerm] = useState("")
+  const [filterLevel, setFilterLevel] = useState("all")
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [adminDialogOpen, setAdminDialogOpen] = useState(false)
+  const [adminFeature, setAdminFeature] = useState("")
+  const [pendingAdminAction, setPendingAdminAction] = useState<(() => void) | null>(null)
+  const [students] = useState(mockStudents)
 
   const filteredStudents = useMemo(() => {
     return students.filter(student => {
