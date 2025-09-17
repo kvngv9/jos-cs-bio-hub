@@ -4,6 +4,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { Link, useLocation } from "react-router-dom"
 import { AdminPanel } from "./AdminPanel"
 import { StudentLogin } from "./StudentLogin"
+import { AdminManagement } from "./AdminManagement"
 import { useAdmin } from "@/hooks/useAdmin"
 import {
   DropdownMenu,
@@ -70,6 +71,7 @@ export function Header() {
             </Button>
           )}
           <AdminPanel />
+          <AdminManagement />
           <ThemeToggle />
           
           {/* User Menu */}

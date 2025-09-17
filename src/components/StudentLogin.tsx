@@ -7,12 +7,14 @@ import { User, LogIn, LogOut, Edit } from "lucide-react"
 import { useStudentAuth } from "@/hooks/useStudentAuth"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ForgotPassword } from "@/components/ForgotPassword"
 
 export const StudentLogin = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [email, setEmail] = useState("")
-  const [studentId, setStudentId] = useState("")
+  const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
   const { currentStudent, login, logout } = useStudentAuth()
   const { toast } = useToast()
 
@@ -21,7 +23,7 @@ export const StudentLogin = () => {
     
     await new Promise(resolve => setTimeout(resolve, 500))
     
-    const success = login(email, studentId)
+    const success = login(email, password)
     
     if (success) {
       toast({
@@ -30,11 +32,11 @@ export const StudentLogin = () => {
       })
       setIsOpen(false)
       setEmail("")
-      setStudentId("")
+      setPassword("")
     } else {
       toast({
         title: "Login Failed",
-        description: "Invalid credentials or profile not approved yet.",
+        description: "Invalid email/password or profile not approved yet.",
         variant: "destructive",
       })
     }
@@ -59,7 +61,7 @@ export const StudentLogin = () => {
             Welcome, {currentStudent.name}
           </CardTitle>
           <CardDescription>
-            Student ID: {currentStudent.studentId} | Level: {currentStudent.level}
+            Email: {currentStudent.email} | Level: {currentStudent.level}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -108,28 +110,47 @@ export const StudentLogin = () => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="student-id">Student ID</Label>
+            <Label htmlFor="student-password">Password</Label>
             <Input
-              id="student-id"
-              placeholder="Enter your student ID"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
+              id="student-password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isLoading}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleLogin} 
-              disabled={!email || !studentId || isLoading}
-              className="btn-university"
-            >
-              {isLoading ? "Logging in..." : "Login"}
-            </Button>
+          <div className="space-y-3">
+            <div className="flex justify-center">
+              <Button 
+                variant="link" 
+                size="sm"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-primary hover:text-primary/80"
+              >
+                Forgot Password?
+              </Button>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isLoading}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleLogin} 
+                disabled={!email || !password || isLoading}
+                className="btn-university"
+              >
+                {isLoading ? "Logging in..." : "Login"}
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
+      
+      <ForgotPassword 
+        isOpen={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+        userType="student"
+      />
     </Dialog>
   )
 }

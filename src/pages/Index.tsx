@@ -130,12 +130,14 @@ const Index = () => {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Button 
-              size="lg" 
-              className="px-8 py-3 text-lg bg-success hover:bg-success/90 text-success-foreground transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
-            >
-              Learn More
-            </Button>
+            <Link to="/dashboard">
+              <Button 
+                size="lg" 
+                className="px-8 py-3 text-lg bg-success hover:bg-success/90 text-success-foreground transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+              >
+                Learn More
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

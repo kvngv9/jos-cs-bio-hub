@@ -22,7 +22,7 @@ interface Student {
 interface StudentAuthContextType {
   currentStudent: Student | null
   allStudents: Student[]
-  login: (email: string, studentId: string) => boolean
+  login: (email: string, password: string) => boolean
   logout: () => void
   updateProfile: (updates: Partial<Student>) => void
   addStudent: (student: Student) => void
@@ -69,8 +69,11 @@ export const StudentAuthProvider = ({ children }: StudentAuthProviderProps) => {
     localStorage.setItem("students", JSON.stringify(allStudents))
   }, [allStudents])
 
-  const login = (email: string, studentId: string): boolean => {
-    const student = allStudents.find(s => s.email === email && s.studentId === studentId)
+  const login = (email: string, password: string): boolean => {
+    // Default password is "0000" for all students
+    if (password !== "0000") return false
+    
+    const student = allStudents.find(s => s.email === email)
     if (student && student.approved) {
       setCurrentStudent(student)
       sessionStorage.setItem("student_session", JSON.stringify(student))

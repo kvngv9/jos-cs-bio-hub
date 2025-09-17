@@ -91,7 +91,7 @@ export const Footer = () => {
 
         <div className="border-t border-border/50 mt-8 pt-8 text-center text-sm text-muted-foreground">
           <p>© 2024 University of Jos - Computer Science Department. All rights reserved.</p>
-          <p className="mt-2">Designed with ❤️ for academic excellence</p>
+          <p className="mt-2">Designed for academic excellence</p>
         </div>
       </div>
     </footer>
