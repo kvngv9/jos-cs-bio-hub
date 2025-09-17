@@ -13,6 +13,7 @@ import { useStudentAuth } from "@/hooks/useStudentAuth"
 import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { AdminDialog } from "./AdminDialog"
+import { AdminManagement } from "./AdminManagement"
 
 export const AdminPanel = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -91,30 +92,43 @@ export const AdminPanel = () => {
             Admin Panel
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-lg sm:text-xl">
               <Settings className="h-5 w-5 text-primary" />
               Admin Panel - Student Management
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-sm">
               Manage student profiles, approve new registrations, and oversee the system.
             </DialogDescription>
           </DialogHeader>
           
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold">System Management</h3>
+            </div>
+            <AdminManagement />
+          </div>
+
           <Tabs defaultValue="pending" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="pending" className="flex items-center gap-2">
-                <UserCheck className="h-4 w-4" />
-                Pending ({pendingStudents.length})
+            <TabsList className="grid w-full grid-cols-3 text-xs sm:text-sm">
+              <TabsTrigger value="pending" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
+                <UserCheck className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Pending</span>
+                <span className="sm:hidden">({pendingStudents.length})</span>
+                <span className="hidden sm:inline">({pendingStudents.length})</span>
               </TabsTrigger>
-              <TabsTrigger value="approved" className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4" />
-                Approved ({approvedStudents.length})
+              <TabsTrigger value="approved" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
+                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Approved</span>
+                <span className="sm:hidden">({approvedStudents.length})</span>
+                <span className="hidden sm:inline">({approvedStudents.length})</span>
               </TabsTrigger>
-              <TabsTrigger value="stats" className="flex items-center gap-2">
-                <Eye className="h-4 w-4" />
-                Statistics
+              <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
+                <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Statistics</span>
+                <span className="sm:hidden">Stats</span>
               </TabsTrigger>
             </TabsList>
             
@@ -140,7 +154,7 @@ export const AdminPanel = () => {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                           <strong>Level:</strong> {student.level}
                         </div>
@@ -153,8 +167,20 @@ export const AdminPanel = () => {
                         <div>
                           <strong>CGPA:</strong> {student.cgpa || 'N/A'}
                         </div>
+                        <div>
+                          <strong>Entry Year:</strong> {(student as any).entryYear || 'N/A'}
+                        </div>
+                        <div>
+                          <strong>Address:</strong> {student.address ? student.address.substring(0, 50) + '...' : 'N/A'}
+                        </div>
                       </div>
-                      <div className="flex gap-2">
+                      {student.bio && (
+                        <div className="mb-4">
+                          <strong>Bio:</strong> 
+                          <p className="text-sm text-muted-foreground mt-1">{student.bio}</p>
+                        </div>
+                      )}
+                      <div className="flex flex-wrap gap-2">
                         <Button 
                           size="sm" 
                           onClick={() => handleApprove(student.id)}
@@ -215,7 +241,7 @@ export const AdminPanel = () => {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                           <strong>Level:</strong> {student.level}
                         </div>
@@ -228,7 +254,19 @@ export const AdminPanel = () => {
                         <div>
                           <strong>CGPA:</strong> {student.cgpa || 'N/A'}
                         </div>
+                        <div>
+                          <strong>Entry Year:</strong> {(student as any).entryYear || 'N/A'}
+                        </div>
+                        <div>
+                          <strong>Address:</strong> {student.address ? student.address.substring(0, 50) + '...' : 'N/A'}
+                        </div>
                       </div>
+                      {student.bio && (
+                        <div className="mb-4">
+                          <strong>Bio:</strong> 
+                          <p className="text-sm text-muted-foreground mt-1">{student.bio}</p>
+                        </div>
+                      )}
                       <div className="flex gap-2">
                         <Button 
                           size="sm" 

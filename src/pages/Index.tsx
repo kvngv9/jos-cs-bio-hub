@@ -63,16 +63,16 @@ const Index = () => {
       <HeroBanner />
 
       {/* Stats Section */}
-      <section className="py-16 px-4 bg-muted/30">
+      <section className="py-12 md:py-16 px-4 bg-muted/30">
         <div className="container mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 animate-slide-up">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 animate-slide-up">
             {stats.map((stat, index) => (
               <div key={index} className="text-center space-y-2">
-                <div className="mx-auto w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
-                  <stat.icon className="h-6 w-6 text-white" />
+                <div className="mx-auto w-10 h-10 md:w-12 md:h-12 bg-gradient-primary rounded-full flex items-center justify-center">
+                  <stat.icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
                 </div>
-                <div className="text-2xl md:text-3xl font-bold text-primary">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+                <div className="text-xl md:text-2xl lg:text-3xl font-bold text-primary">{stat.value}</div>
+                <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -83,25 +83,25 @@ const Index = () => {
       <section className="py-20 px-4">
         <div className="container mx-auto space-y-12">
           <div className="text-center space-y-4 animate-fade-in">
-            <h2 className="text-3xl md:text-4xl font-bold">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">
               Comprehensive Student Data Management
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
               Everything you need to manage student information efficiently and securely
             </p>
           </div>
           
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 animate-slide-up">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-slide-up">
             {features.map((feature, index) => (
               <Card key={index} className="card-academic group hover:shadow-medium transition-all duration-300">
-                <CardHeader className="text-center">
-                  <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <feature.icon className={`h-8 w-8 ${feature.color}`} />
+                <CardHeader className="text-center pb-3">
+                  <div className="mx-auto w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <feature.icon className={`h-6 w-6 md:h-8 md:w-8 ${feature.color}`} />
                   </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  <CardTitle className="text-lg md:text-xl">{feature.title}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-center leading-relaxed">
+                <CardContent className="pt-0">
+                  <CardDescription className="text-center leading-relaxed text-sm md:text-base">
                     {feature.description}
                   </CardDescription>
                 </CardContent>
@@ -112,28 +112,28 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-primary text-white">
-        <div className="container mx-auto text-center space-y-8 animate-fade-in">
-          <div className="space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold">
+      <section className="py-16 md:py-20 px-4 bg-gradient-primary text-white">
+        <div className="container mx-auto text-center space-y-6 md:space-y-8 animate-fade-in">
+          <div className="space-y-3 md:space-y-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">
               Ready to Get Started?
             </h2>
-            <p className="text-xl opacity-90 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
               Join the digital transformation of student data management at University of Jos
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
             <Link to="/biodata-form">
-              <Button size="lg" variant="secondary" className="px-8 py-3 text-lg">
+              <Button size="lg" variant="secondary" className="w-full sm:w-auto px-6 md:px-8 py-3 text-base md:text-lg">
                 Complete Your Profile
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
               </Button>
             </Link>
-            <Link to="/dashboard">
+            <Link to="/department-info">
               <Button 
                 size="lg" 
-                className="px-8 py-3 text-lg bg-success hover:bg-success/90 text-success-foreground transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+                className="w-full sm:w-auto px-6 md:px-8 py-3 text-base md:text-lg bg-success hover:bg-success/90 text-success-foreground transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
               >
                 Learn More
               </Button>
