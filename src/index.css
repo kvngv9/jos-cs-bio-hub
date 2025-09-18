@@ -295,7 +295,7 @@
   filter: blur(2px);
 }
 
-/* Responsive Improvements */
+/* Mobile-first responsive improvements */
 @layer utilities {
   .glass-card {
     @apply backdrop-blur-sm bg-card/80 border border-border/50;
@@ -311,5 +311,51 @@
   
   .responsive-text {
     @apply text-sm sm:text-base lg:text-lg;
+  }
+  
+  .mobile-friendly {
+    @apply touch-manipulation select-none;
+  }
+  
+  .responsive-button {
+    @apply min-h-[44px] min-w-[44px] touch-manipulation;
+  }
+  
+  .responsive-form {
+    @apply space-y-4 sm:space-y-6;
+  }
+  
+  .responsive-card {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+}
+
+/* Enhanced focus states for accessibility */
+@layer base {
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  
+  button:focus-visible {
+    @apply ring-2 ring-primary ring-offset-2;
+  }
+  
+  input:focus-visible {
+    @apply ring-2 ring-primary ring-offset-2;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    @apply hidden;
+  }
+  
+  .print-only {
+    @apply block;
+  }
+  
+  * {
+    @apply text-black bg-white;
   }
 }

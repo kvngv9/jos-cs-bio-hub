@@ -71,7 +71,6 @@ export function Header() {
             </Button>
           )}
           <AdminPanel />
-          <AdminManagement />
           <ThemeToggle />
           
           {/* User Menu */}

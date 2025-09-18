@@ -133,7 +133,8 @@ export function BiodataForm() {
       name: `${data.firstName} ${data.lastName}`,
       profilePicture: profileImage || generateAvatarFromInitials(`${data.firstName} ${data.lastName}`),
       submittedAt: new Date().toISOString(),
-      approved: false,
+      approved: true, // Auto-approve new registrations
+      completionStatus: "completed" as const,
       skills: skills.map(skill => skill.name).filter(name => name.trim() !== ''),
       projects,
       experiences
@@ -147,7 +148,7 @@ export function BiodataForm() {
 
     toast({
       title: "Profile Submitted Successfully!",
-      description: "Your bio-data has been submitted for review. You'll be notified once approved.",
+      description: "Your bio-data has been submitted and you can now login with your email and password (0000).",
     })
 
     // Reset form

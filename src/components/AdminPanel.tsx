@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { AdminDialog } from "./AdminDialog"
 import { AdminManagement } from "./AdminManagement"
+import { useStudentData } from "@/hooks/useStudentData"
 
 export const AdminPanel = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -21,6 +22,10 @@ export const AdminPanel = () => {
   const [editingStudent, setEditingStudent] = useState<any>(null)
   const { isAdmin } = useAdmin()
   const { allStudents, updateStudent, deleteStudent, approveStudent } = useStudentAuth()
+  const { students: sampleData } = useStudentData()
+  
+  // Merge real student data with sample data for demonstration
+  const allStudentsWithSamples = [...allStudents, ...sampleData.filter(s => !allStudents.find(existing => existing.id === s.id))]
   const { toast } = useToast()
 
   const handleAdminAccess = () => {
@@ -32,10 +37,10 @@ export const AdminPanel = () => {
   }
 
   const handleApprove = (studentId: string) => {
-    approveStudent(studentId)
+    updateStudent(studentId, { completionStatus: "completed" })
     toast({
       title: "Student Approved",
-      description: "Student profile has been approved successfully.",
+      description: "Student profile has been marked as completed.",
     })
   }
 
@@ -63,8 +68,9 @@ export const AdminPanel = () => {
     }
   }
 
-  const pendingStudents = allStudents.filter(s => !s.approved)
-  const approvedStudents = allStudents.filter(s => s.approved)
+  const completedStudents = allStudentsWithSamples.filter(s => s.completionStatus === "completed")
+  const incompleteStudents = allStudentsWithSamples.filter(s => s.completionStatus === "incomplete") 
+  const formerStudents = allStudentsWithSamples.filter(s => s.completionStatus === "former")
 
   if (!isAdmin) {
     return (
@@ -111,19 +117,25 @@ export const AdminPanel = () => {
             <AdminManagement />
           </div>
 
-          <Tabs defaultValue="pending" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 text-xs sm:text-sm">
-              <TabsTrigger value="pending" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
-                <UserCheck className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Pending</span>
-                <span className="sm:hidden">({pendingStudents.length})</span>
-                <span className="hidden sm:inline">({pendingStudents.length})</span>
-              </TabsTrigger>
-              <TabsTrigger value="approved" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
+          <Tabs defaultValue="completed" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 text-xs sm:text-sm">
+              <TabsTrigger value="completed" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
                 <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Approved</span>
-                <span className="sm:hidden">({approvedStudents.length})</span>
-                <span className="hidden sm:inline">({approvedStudents.length})</span>
+                <span className="hidden sm:inline">Completed</span>
+                <span className="sm:hidden">({completedStudents.length})</span>
+                <span className="hidden sm:inline">({completedStudents.length})</span>
+              </TabsTrigger>
+              <TabsTrigger value="incomplete" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
+                <UserCheck className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Incomplete</span>
+                <span className="sm:hidden">({incompleteStudents.length})</span>
+                <span className="hidden sm:inline">({incompleteStudents.length})</span>
+              </TabsTrigger>
+              <TabsTrigger value="former" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
+                <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Former</span>
+                <span className="sm:hidden">({formerStudents.length})</span>
+                <span className="hidden sm:inline">({formerStudents.length})</span>
               </TabsTrigger>
               <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
                 <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -132,96 +144,9 @@ export const AdminPanel = () => {
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="pending" className="space-y-4">
+            <TabsContent value="completed" className="space-y-4">
               <div className="grid gap-4">
-                {pendingStudents.map((student) => (
-                  <Card key={student.id} className="border-warning/30">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Avatar>
-                            <AvatarImage src={student.profilePicture} />
-                            <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <CardTitle className="text-lg">{student.name}</CardTitle>
-                            <CardDescription>{student.email} | {student.studentId}</CardDescription>
-                          </div>
-                        </div>
-                        <Badge variant="outline" className="border-warning text-warning">
-                          Pending
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                          <strong>Level:</strong> {student.level}
-                        </div>
-                        <div>
-                          <strong>Phone:</strong> {student.phone || 'N/A'}
-                        </div>
-                        <div>
-                          <strong>LGA:</strong> {student.lga || 'N/A'}
-                        </div>
-                        <div>
-                          <strong>CGPA:</strong> {student.cgpa || 'N/A'}
-                        </div>
-                        <div>
-                          <strong>Entry Year:</strong> {(student as any).entryYear || 'N/A'}
-                        </div>
-                        <div>
-                          <strong>Address:</strong> {student.address ? student.address.substring(0, 50) + '...' : 'N/A'}
-                        </div>
-                      </div>
-                      {student.bio && (
-                        <div className="mb-4">
-                          <strong>Bio:</strong> 
-                          <p className="text-sm text-muted-foreground mt-1">{student.bio}</p>
-                        </div>
-                      )}
-                      <div className="flex flex-wrap gap-2">
-                        <Button 
-                          size="sm" 
-                          onClick={() => handleApprove(student.id)}
-                          className="btn-university"
-                        >
-                          <UserCheck className="h-4 w-4 mr-2" />
-                          Approve
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => handleEdit(student)}
-                        >
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="destructive"
-                          onClick={() => handleDelete(student.id)}
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-                {pendingStudents.length === 0 && (
-                  <Card>
-                    <CardContent className="py-8 text-center text-muted-foreground">
-                      No pending students to review.
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="approved" className="space-y-4">
-              <div className="grid gap-4">
-                {approvedStudents.map((student) => (
+                {completedStudents.map((student) => (
                   <Card key={student.id} className="border-success/30">
                     <CardHeader>
                       <div className="flex items-center justify-between">
@@ -231,67 +156,139 @@ export const AdminPanel = () => {
                             <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <CardTitle className="text-lg">{student.name}</CardTitle>
-                            <CardDescription>{student.email} | {student.studentId}</CardDescription>
+                            <CardTitle className="text-base md:text-lg">{student.name}</CardTitle>
+                            <CardDescription className="text-xs md:text-sm">{student.email} | {student.studentId}</CardDescription>
                           </div>
                         </div>
-                        <Badge variant="outline" className="border-success text-success">
-                          Approved
+                        <Badge variant="outline" className="border-success text-success text-xs">
+                          Completed
                         </Badge>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                          <strong>Level:</strong> {student.level}
-                        </div>
-                        <div>
-                          <strong>Phone:</strong> {student.phone || 'N/A'}
-                        </div>
-                        <div>
-                          <strong>LGA:</strong> {student.lga || 'N/A'}
-                        </div>
-                        <div>
-                          <strong>CGPA:</strong> {student.cgpa || 'N/A'}
-                        </div>
-                        <div>
-                          <strong>Entry Year:</strong> {(student as any).entryYear || 'N/A'}
-                        </div>
-                        <div>
-                          <strong>Address:</strong> {student.address ? student.address.substring(0, 50) + '...' : 'N/A'}
-                        </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 mb-4 text-sm">
+                        <div><strong>Level:</strong> {student.level}</div>
+                        <div><strong>Phone:</strong> {student.phone || 'N/A'}</div>
+                        <div><strong>LGA:</strong> {student.lga || 'N/A'}</div>
+                        <div><strong>CGPA:</strong> {student.cgpa || 'N/A'}</div>
+                        <div><strong>Entry Year:</strong> {student.entryYear || 'N/A'}</div>
+                        <div><strong>Status:</strong> {student.approved ? 'Active' : 'Pending'}</div>
                       </div>
-                      {student.bio && (
-                        <div className="mb-4">
-                          <strong>Bio:</strong> 
-                          <p className="text-sm text-muted-foreground mt-1">{student.bio}</p>
-                        </div>
-                      )}
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => handleEdit(student)}
-                        >
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" variant="outline" onClick={() => handleEdit(student)}>
+                          <Edit className="h-4 w-4 mr-1" />
+                          <span className="hidden sm:inline">Edit</span>
                         </Button>
-                        <Button 
-                          size="sm" 
-                          variant="destructive"
-                          onClick={() => handleDelete(student.id)}
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
+                        <Button size="sm" variant="destructive" onClick={() => handleDelete(student.id)}>
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          <span className="hidden sm:inline">Delete</span>
                         </Button>
                       </div>
                     </CardContent>
                   </Card>
                 ))}
-                {approvedStudents.length === 0 && (
+                {completedStudents.length === 0 && (
                   <Card>
                     <CardContent className="py-8 text-center text-muted-foreground">
-                      No approved students yet.
+                      No completed biodata entries found.
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="incomplete" className="space-y-4">
+              <div className="grid gap-4">
+                {incompleteStudents.map((student) => (
+                  <Card key={student.id} className="border-warning/30">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Avatar>
+                            <AvatarImage src={student.profilePicture} />
+                            <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <CardTitle className="text-base md:text-lg">{student.name}</CardTitle>
+                            <CardDescription className="text-xs md:text-sm">{student.email} | {student.studentId}</CardDescription>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="border-warning text-warning text-xs">
+                          Incomplete
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 mb-4 text-sm">
+                        <div><strong>Level:</strong> {student.level}</div>
+                        <div><strong>Phone:</strong> {student.phone || 'Missing'}</div>
+                        <div><strong>LGA:</strong> {student.lga || 'Missing'}</div>
+                        <div><strong>CGPA:</strong> {student.cgpa || 'Missing'}</div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" onClick={() => handleApprove(student.id)} className="btn-university">
+                          <UserCheck className="h-4 w-4 mr-1" />
+                          <span className="hidden sm:inline">Mark Complete</span>
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => handleEdit(student)}>
+                          <Edit className="h-4 w-4 mr-1" />
+                          <span className="hidden sm:inline">Edit</span>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {incompleteStudents.length === 0 && (
+                  <Card>
+                    <CardContent className="py-8 text-center text-muted-foreground">
+                      No incomplete biodata entries found.
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="former" className="space-y-4">
+              <div className="grid gap-4">
+                {formerStudents.map((student) => (
+                  <Card key={student.id} className="border-muted/30">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Avatar>
+                            <AvatarImage src={student.profilePicture} />
+                            <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <CardTitle className="text-base md:text-lg">{student.name}</CardTitle>
+                            <CardDescription className="text-xs md:text-sm">{student.email} | {student.studentId}</CardDescription>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="border-muted text-muted-foreground text-xs">
+                          Former
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 mb-4 text-sm">
+                        <div><strong>Level:</strong> {student.level}</div>
+                        <div><strong>Final CGPA:</strong> {student.cgpa || 'N/A'}</div>
+                        <div><strong>Entry Year:</strong> {student.entryYear || 'N/A'}</div>
+                        <div><strong>Status:</strong> Alumni</div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" variant="outline" onClick={() => handleEdit(student)}>
+                          <Edit className="h-4 w-4 mr-1" />
+                          <span className="hidden sm:inline">View Details</span>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {formerStudents.length === 0 && (
+                  <Card>
+                    <CardContent className="py-8 text-center text-muted-foreground">
+                      No former students found.
                     </CardContent>
                   </Card>
                 )}
@@ -305,33 +302,31 @@ export const AdminPanel = () => {
                     <CardTitle className="text-sm font-medium">Total Students</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{allStudents.length}</div>
+                    <div className="text-2xl font-bold">{allStudentsWithSamples.length}</div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Approved</CardTitle>
+                    <CardTitle className="text-sm font-medium">Completed</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-success">{approvedStudents.length}</div>
+                    <div className="text-2xl font-bold text-success">{completedStudents.length}</div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Pending</CardTitle>
+                    <CardTitle className="text-sm font-medium">Incomplete</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-warning">{pendingStudents.length}</div>
+                    <div className="text-2xl font-bold text-warning">{incompleteStudents.length}</div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Approval Rate</CardTitle>
+                    <CardTitle className="text-sm font-medium">Former Students</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-info">
-                      {allStudents.length > 0 ? Math.round((approvedStudents.length / allStudents.length) * 100) : 0}%
-                    </div>
+                    <div className="text-2xl font-bold text-info">{formerStudents.length}</div>
                   </CardContent>
                 </Card>
               </div>

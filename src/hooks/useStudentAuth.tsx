@@ -17,6 +17,9 @@ interface Student {
   personalityType?: string
   bio?: string
   lga?: string
+  completionStatus: "completed" | "incomplete" | "former"
+  submittedAt?: string
+  entryYear?: string
 }
 
 interface StudentAuthContextType {
@@ -74,7 +77,7 @@ export const StudentAuthProvider = ({ children }: StudentAuthProviderProps) => {
     if (password !== "0000") return false
     
     const student = allStudents.find(s => s.email === email)
-    if (student && student.approved) {
+    if (student) {
       setCurrentStudent(student)
       sessionStorage.setItem("student_session", JSON.stringify(student))
       return true

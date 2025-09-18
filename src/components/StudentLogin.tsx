@@ -7,6 +7,7 @@ import { User, LogIn, LogOut, Edit } from "lucide-react"
 import { useStudentAuth } from "@/hooks/useStudentAuth"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { ForgotPassword } from "@/components/ForgotPassword"
 
 export const StudentLogin = () => {
@@ -28,15 +29,15 @@ export const StudentLogin = () => {
     if (success) {
       toast({
         title: "Login Successful",
-        description: "Welcome back! You can now update your profile.",
+        description: `Welcome back, ${currentStudent?.name}! You can now update your profile.`,
       })
       setIsOpen(false)
       setEmail("")
       setPassword("")
     } else {
       toast({
-        title: "Login Failed",
-        description: "Invalid email/password or profile not approved yet.",
+        title: "Login Failed", 
+        description: "Invalid email/password. Make sure you have submitted your biodata first.",
         variant: "destructive",
       })
     }
@@ -62,6 +63,11 @@ export const StudentLogin = () => {
           </CardTitle>
           <CardDescription>
             Email: {currentStudent.email} | Level: {currentStudent.level}
+            {currentStudent.approved && (
+              <Badge variant="outline" className="ml-2 border-success text-success">
+                Active
+              </Badge>
+            )}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
