@@ -401,15 +401,11 @@ export const StudentDashboardV2 = () => {
                     ))}
                   </div>
                 </div>
-                {currentStudent.hobbies && currentStudent.hobbies.length > 0 && (
+                {currentStudent.hobbies && currentStudent.hobbies.trim() && (
                   <div>
                     <h4 className="text-sm font-medium mb-2">Hobbies</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {currentStudent.hobbies.map((hobby, index) => (
-                        <Badge key={index} variant="outline">
-                          {hobby}
-                        </Badge>
-                      ))}
+                    <div className="text-sm text-muted-foreground">
+                      {currentStudent.hobbies}
                     </div>
                   </div>
                 )}

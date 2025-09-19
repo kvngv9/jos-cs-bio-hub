@@ -399,11 +399,25 @@ export const AdminPanelV2 = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-full bg-gradient-academic border-2 border-primary/20 flex items-center justify-center overflow-hidden">
+                        {student.profilePicture || student.profileImage ? (
+                          <img src={student.profilePicture || student.profileImage} alt="Profile" className="h-full w-full object-cover" />
+                        ) : (
+                          <div className="text-sm font-medium text-primary">
+                            {student.name?.charAt(0) || student.firstName?.charAt(0) || 'S'}
+                          </div>
+                        )}
+                      </div>
                       <div>
-                        <h3 className="font-medium">{student.name}</h3>
+                        <h3 className="font-medium">{student.name || `${student.firstName || ''} ${student.lastName || ''}`.trim()}</h3>
                         <p className="text-sm text-muted-foreground">
                           {student.studentId} • {student.email}
                         </p>
+                        <div className="flex gap-2 text-xs text-muted-foreground mt-1">
+                          <span>Level {student.level}</span>
+                          {student.phone && <span>• {student.phone}</span>}
+                          {student.entryYear && <span>• {student.entryYear}</span>}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -715,87 +729,360 @@ export const AdminPanelV2 = () => {
       {/* Student Edit Dialog */}
       {editingStudent && (
         <Dialog open={!!editingStudent} onOpenChange={() => setEditingStudent(null)}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Edit Student: {editingStudent.name}</DialogTitle>
+              <DialogTitle>Edit Student: {editingStudent.name || `${editingStudent.firstName || ''} ${editingStudent.lastName || ''}`.trim()}</DialogTitle>
+              <DialogDescription>
+                Complete administrative access to edit all biodata fields
+              </DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>Name</Label>
-                <Input
-                  value={editingStudent.name || ""}
-                  onChange={(e) => setEditingStudent({...editingStudent, name: e.target.value})}
-                />
+            
+            <Tabs defaultValue="personal" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="personal">Personal Info</TabsTrigger>
+                <TabsTrigger value="academic">Academic Info</TabsTrigger>
+                <TabsTrigger value="additional">Additional Info</TabsTrigger>
+                <TabsTrigger value="emergency">Emergency Contact</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="personal" className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>First Name</Label>
+                    <Input
+                      value={editingStudent.firstName || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, firstName: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label>Last Name</Label>
+                    <Input
+                      value={editingStudent.lastName || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, lastName: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label>Middle Name</Label>
+                    <Input
+                      value={editingStudent.middleName || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, middleName: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Email Address</Label>
+                    <Input
+                      type="email"
+                      value={editingStudent.email || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, email: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label>Phone Number</Label>
+                    <Input
+                      value={editingStudent.phone || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, phone: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>Date of Birth</Label>
+                    <Input
+                      type="date"
+                      value={editingStudent.dateOfBirth || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, dateOfBirth: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label>Gender</Label>
+                    <Select 
+                      value={editingStudent.gender || ""} 
+                      onValueChange={(value) => setEditingStudent({...editingStudent, gender: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Nationality</Label>
+                    <Input
+                      value={editingStudent.nationality || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, nationality: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>State of Origin</Label>
+                    <Input
+                      value={editingStudent.stateOfOrigin || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, stateOfOrigin: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label>Local Government Area (LGA)</Label>
+                    <Input
+                      value={editingStudent.lga || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, lga: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Residential Address</Label>
+                  <Textarea
+                    value={editingStudent.address || ""}
+                    onChange={(e) => setEditingStudent({...editingStudent, address: e.target.value})}
+                    className="min-h-[60px]"
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="academic" className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Student ID/Matric Number</Label>
+                    <Input
+                      value={editingStudent.studentId || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, studentId: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label>Level</Label>
+                    <Select 
+                      value={editingStudent.level || ""} 
+                      onValueChange={(value) => setEditingStudent({...editingStudent, level: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select level" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="100">100 Level</SelectItem>
+                        <SelectItem value="200">200 Level</SelectItem>
+                        <SelectItem value="300">300 Level</SelectItem>
+                        <SelectItem value="400">400 Level</SelectItem>
+                        <SelectItem value="500">500 Level</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Entry Year</Label>
+                    <Input
+                      type="number"
+                      value={editingStudent.entryYear || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, entryYear: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label>Expected Graduation Year</Label>
+                    <Input
+                      type="number"
+                      value={editingStudent.expectedGraduation || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, expectedGraduation: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Completion Status</Label>
+                  <Select 
+                    value={editingStudent.completionStatus || "incomplete"} 
+                    onValueChange={(value) => setEditingStudent({...editingStudent, completionStatus: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="incomplete">Incomplete</SelectItem>
+                      <SelectItem value="former">Former Student</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Skills (comma-separated)</Label>
+                  <Textarea
+                    value={editingStudent.skills?.join(", ") || ""}
+                    onChange={(e) => {
+                      const skillsArray = e.target.value.split(",").map(s => s.trim()).filter(s => s)
+                      setEditingStudent({...editingStudent, skills: skillsArray})
+                    }}
+                    placeholder="JavaScript, Python, React, etc."
+                    className="min-h-[60px]"
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="additional" className="space-y-4">
+                <div>
+                  <Label>Personality Type</Label>
+                  <Select 
+                    value={editingStudent.personalityType || ""} 
+                    onValueChange={(value) => setEditingStudent({...editingStudent, personalityType: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select personality type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="creative">Creative</SelectItem>
+                      <SelectItem value="logical">Logical</SelectItem>
+                      <SelectItem value="leader">Leader</SelectItem>
+                      <SelectItem value="social">Social</SelectItem>
+                      <SelectItem value="adventurous">Adventurous</SelectItem>
+                      <SelectItem value="harmonious">Harmonious</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Hobbies & Interests</Label>
+                  <Textarea
+                    value={editingStudent.hobbies || ""}
+                    onChange={(e) => setEditingStudent({...editingStudent, hobbies: e.target.value})}
+                    placeholder="Reading, gaming, sports, music, etc."
+                    className="min-h-[80px]"
+                  />
+                </div>
+
+                <div>
+                  <Label>Goals & Aspirations</Label>
+                  <Textarea
+                    value={editingStudent.goals || ""}
+                    onChange={(e) => setEditingStudent({...editingStudent, goals: e.target.value})}
+                    placeholder="Career goals, life aspirations, etc."
+                    className="min-h-[80px]"
+                  />
+                </div>
+
+                <div>
+                  <Label>Bio/About</Label>
+                  <Textarea
+                    value={editingStudent.bio || ""}
+                    onChange={(e) => setEditingStudent({...editingStudent, bio: e.target.value})}
+                    placeholder="Personal bio or description"
+                    className="min-h-[80px]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Approval Status</Label>
+                    <Select 
+                      value={editingStudent.approved ? "true" : "false"} 
+                      onValueChange={(value) => setEditingStudent({...editingStudent, approved: value === "true"})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="true">Approved</SelectItem>
+                        <SelectItem value="false">Pending</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Department</Label>
+                    <Input
+                      value={editingStudent.department || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, department: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="emergency" className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Emergency Contact Name</Label>
+                    <Input
+                      value={editingStudent.emergencyName || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, emergencyName: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label>Emergency Contact Phone</Label>
+                    <Input
+                      value={editingStudent.emergencyPhone || ""}
+                      onChange={(e) => setEditingStudent({...editingStudent, emergencyPhone: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Relationship to Emergency Contact</Label>
+                  <Input
+                    value={editingStudent.emergencyRelationship || ""}
+                    onChange={(e) => setEditingStudent({...editingStudent, emergencyRelationship: e.target.value})}
+                    placeholder="Parent, Sibling, Guardian, etc."
+                  />
+                </div>
+
+                <div className="border-t pt-4 mt-6">
+                  <h4 className="text-sm font-medium mb-3">Legacy Fields (for compatibility)</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Guardian Name</Label>
+                      <Input
+                        value={editingStudent.guardianName || ""}
+                        onChange={(e) => setEditingStudent({...editingStudent, guardianName: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label>Guardian Phone</Label>
+                      <Input
+                        value={editingStudent.guardianPhone || ""}
+                        onChange={(e) => setEditingStudent({...editingStudent, guardianPhone: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label>Next of Kin</Label>
+                      <Input
+                        value={editingStudent.nextOfKin || ""}
+                        onChange={(e) => setEditingStudent({...editingStudent, nextOfKin: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label>Next of Kin Phone</Label>
+                      <Input
+                        value={editingStudent.nextOfKinPhone || ""}
+                        onChange={(e) => setEditingStudent({...editingStudent, nextOfKinPhone: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+
+            <div className="flex justify-between items-center pt-4 border-t">
+              <div className="text-sm text-muted-foreground">
+                Last modified: {editingStudent.submittedAt ? new Date(editingStudent.submittedAt).toLocaleDateString() : 'Never'}
               </div>
-              <div>
-                <Label>Email</Label>
-                <Input
-                  value={editingStudent.email || ""}
-                  onChange={(e) => setEditingStudent({...editingStudent, email: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label>Phone</Label>
-                <Input
-                  value={editingStudent.phone || ""}
-                  onChange={(e) => setEditingStudent({...editingStudent, phone: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label>Student ID</Label>
-                <Input
-                  value={editingStudent.studentId || ""}
-                  onChange={(e) => setEditingStudent({...editingStudent, studentId: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label>Level</Label>
-                <Select 
-                  value={editingStudent.level || ""} 
-                  onValueChange={(value) => setEditingStudent({...editingStudent, level: value})}
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setEditingStudent(null)}>
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleStudentUpdate}
+                  className="bg-gradient-primary"
                 >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="100">100</SelectItem>
-                    <SelectItem value="200">200</SelectItem>
-                    <SelectItem value="300">300</SelectItem>
-                    <SelectItem value="400">400</SelectItem>
-                  </SelectContent>
-                </Select>
+                  Save All Changes
+                </Button>
               </div>
-              <div>
-                <Label>Status</Label>
-                <Select 
-                  value={editingStudent.completionStatus || "incomplete"} 
-                  onValueChange={(value) => setEditingStudent({...editingStudent, completionStatus: value})}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="incomplete">Incomplete</SelectItem>
-                    <SelectItem value="former">Former</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="md:col-span-2">
-                <Label>Address</Label>
-                <Textarea
-                  value={editingStudent.address || ""}
-                  onChange={(e) => setEditingStudent({...editingStudent, address: e.target.value})}
-                />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setEditingStudent(null)}>
-                Cancel
-              </Button>
-              <Button onClick={handleStudentUpdate}>
-                Save Changes
-              </Button>
             </div>
           </DialogContent>
         </Dialog>

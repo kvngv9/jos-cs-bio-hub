@@ -7,27 +7,58 @@ interface Student {
   studentId: string
   level: string
   approved: boolean
-  profilePicture?: string
-  skills?: string[]
-  hobbies?: string[]
-  goals?: string
-  address?: string
-  phone?: string
-  personalityType?: string
-  bio?: string
-  lga?: string
   completionStatus: "completed" | "incomplete" | "former"
   submittedAt?: string
-  entryYear?: string
+  
+  // Personal Information
+  firstName?: string
+  lastName?: string
+  middleName?: string
+  phone?: string
+  dateOfBirth?: string
   gender?: string
+  nationality?: string
   stateOfOrigin?: string
+  lga?: string
+  address?: string
+  profilePicture?: string
+  profileImage?: string
+  
+  // Academic Information
+  entryYear?: string
+  expectedGraduation?: string
+  
+  // Additional Information
+  hobbies?: string
+  goals?: string
+  personalityType?: string
+  bio?: string
+  skills?: string[]
+  projects?: Array<{
+    title: string
+    description: string
+    technologies: string
+    year: string
+  }>
+  experiences?: Array<{
+    company: string
+    role: string
+    duration: string
+    description: string
+  }>
+  
+  // Emergency Contact
+  emergencyName?: string
+  emergencyPhone?: string
+  emergencyRelationship?: string
+  
+  // Legacy fields for compatibility
   guardianName?: string
   guardianPhone?: string
   nextOfKin?: string
   nextOfKinPhone?: string
   department?: string
   faculty?: string
-  dateOfBirth?: string
   bloodGroup?: string
   genotype?: string
   religion?: string
