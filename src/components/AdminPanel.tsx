@@ -170,7 +170,7 @@ export const AdminPanel = () => {
                         <div><strong>Level:</strong> {student.level}</div>
                         <div><strong>Phone:</strong> {student.phone || 'N/A'}</div>
                         <div><strong>LGA:</strong> {student.lga || 'N/A'}</div>
-                        <div><strong>CGPA:</strong> {student.cgpa || 'N/A'}</div>
+                        <div><strong>Completion:</strong> {student.completionStatus}</div>
                         <div><strong>Entry Year:</strong> {student.entryYear || 'N/A'}</div>
                         <div><strong>Status:</strong> {student.approved ? 'Active' : 'Pending'}</div>
                       </div>

@@ -26,7 +26,7 @@ export const AdminDialog = ({ isOpen, onClose, onSuccess, feature }: AdminDialog
     // Simulate a small delay for better UX
     await new Promise(resolve => setTimeout(resolve, 500))
     
-    const success = login(password)
+    const success = login("superadmin", password)
     
     if (success) {
       toast({

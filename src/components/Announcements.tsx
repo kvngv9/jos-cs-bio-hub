@@ -3,6 +3,7 @@ import { Megaphone, Pin, Calendar, Clock, Users, BookOpen, Trophy, AlertCircle }
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Header } from "@/components/Header"
 import { AnimatedBackground } from "@/components/AnimatedBackground"
 
@@ -18,7 +19,17 @@ interface Announcement {
 }
 
 export function Announcements() {
-  const [announcements] = useState<Announcement[]>([
+  const [announcements, setAnnouncements] = useState<Announcement[]>([])
+
+  useEffect(() => {
+    // Load announcements from localStorage (admin-created) or use default sample data
+    const savedAnnouncements = localStorage.getItem('announcements')
+    if (savedAnnouncements) {
+      const parsed = JSON.parse(savedAnnouncements)
+      setAnnouncements(parsed.map((a: any) => ({ ...a, date: new Date(a.date) })))
+    } else {
+      // Default sample data
+      setAnnouncements([
     {
       id: '1',
       title: 'Final Year Project Defense Schedule',
@@ -93,6 +104,8 @@ export function Announcements() {
       author: 'Library Committee'
     }
   ])
+    }
+  }, [])
 
   const getTypeIcon = (type: Announcement['type']) => {
     switch (type) {
@@ -207,9 +220,37 @@ export function Announcements() {
                   <p className="text-sm text-muted-foreground">
                     By {announcement.author}
                   </p>
-                  <Button variant="ghost" size="sm">
-                    Read More
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        Read More
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle>{announcement.title}</DialogTitle>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge className={getTypeColor(announcement.type)} variant="outline">
+                            {getTypeIcon(announcement.type)}
+                            <span className="ml-1 capitalize">{announcement.type}</span>
+                          </Badge>
+                          {announcement.targetLevel && (
+                            <Badge variant="secondary">
+                              {announcement.targetLevel}
+                            </Badge>
+                          )}
+                        </div>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            By {announcement.author} • {formatDate(announcement.date)}
+                          </p>
+                          <p className="leading-relaxed">{announcement.content}</p>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </CardContent>
             </Card>

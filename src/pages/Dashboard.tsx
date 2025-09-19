@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast"
 import { StudentCard } from "@/components/StudentCard"
 import { Header } from "@/components/Header"
 import { AdminDialog } from "@/components/AdminDialog"
+import { StudentDashboardV2 } from "@/components/StudentDashboardV2"
+import { AdminPanelV2 } from "@/components/AdminPanelV2"
 
 interface Student {
   id: string
@@ -323,7 +325,8 @@ const mockStudents: Student[] = [
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const { isAdmin } = useAdmin()
+  const { isAdmin, currentAdmin } = useAdmin()
+  const { currentStudent } = useStudentAuth()
   const { toast } = useToast()
   const [searchTerm, setSearchTerm] = useState("")
   const [filterLevel, setFilterLevel] = useState("all")
@@ -397,8 +400,28 @@ export default function Dashboard() {
     })
   }, [students, toast])
 
+  // Route to appropriate dashboard based on user type
+  if (currentAdmin) {
+    return (
+      <div className="min-h-screen relative">
+        <Header />
+        <AdminPanelV2 />
+      </div>
+    )
+  }
+  
+  if (currentStudent) {
+    return (
+      <div className="min-h-screen relative">
+        <Header />
+        <StudentDashboardV2 />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen relative">
+      <Header />
       <div className="container mx-auto py-8 responsive-padding space-y-8">
         {/* Page Header */}
         <div className="text-center space-y-4 animate-fade-in">

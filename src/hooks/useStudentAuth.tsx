@@ -8,7 +8,6 @@ interface Student {
   level: string
   approved: boolean
   profilePicture?: string
-  cgpa?: number
   skills?: string[]
   hobbies?: string[]
   goals?: string
@@ -20,6 +19,24 @@ interface Student {
   completionStatus: "completed" | "incomplete" | "former"
   submittedAt?: string
   entryYear?: string
+  gender?: string
+  stateOfOrigin?: string
+  guardianName?: string
+  guardianPhone?: string
+  nextOfKin?: string
+  nextOfKinPhone?: string
+  department?: string
+  faculty?: string
+  dateOfBirth?: string
+  bloodGroup?: string
+  genotype?: string
+  religion?: string
+  maritalStatus?: string
+  emergencyContact?: string
+  emergencyContactPhone?: string
+  previousInstitution?: string
+  qualification?: string
+  yearOfAdmission?: string
 }
 
 interface StudentAuthContextType {
@@ -32,6 +49,9 @@ interface StudentAuthContextType {
   updateStudent: (id: string, updates: Partial<Student>) => void
   deleteStudent: (id: string) => void
   approveStudent: (id: string) => void
+  exportStudentData: () => void
+  bulkImportStudents: (students: Student[]) => void
+  getStudentsByStatus: (status: "completed" | "incomplete" | "former") => Student[]
 }
 
 const StudentAuthContext = createContext<StudentAuthContextType | null>(null)
@@ -133,6 +153,29 @@ export const StudentAuthProvider = ({ children }: StudentAuthProviderProps) => {
     updateStudent(id, { approved: true })
   }
 
+  const exportStudentData = () => {
+    const csvData = allStudents.map(student => 
+      `"${student.name}","${student.studentId}","${student.level}","${student.email}","${student.phone || ''}","${student.lga || ''}","${student.completionStatus}","${student.submittedAt || ''}"`
+    ).join('\n')
+    
+    const header = '"Name","Student ID","Level","Email","Phone","LGA","Status","Submitted At"\n'
+    const blob = new Blob([header + csvData], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `students_data_${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+    window.URL.revokeObjectURL(url)
+  }
+
+  const bulkImportStudents = (students: Student[]) => {
+    setAllStudents(prev => [...prev, ...students])
+  }
+
+  const getStudentsByStatus = (status: "completed" | "incomplete" | "former") => {
+    return allStudents.filter(student => student.completionStatus === status)
+  }
+
   return (
     <StudentAuthContext.Provider value={{
       currentStudent,
@@ -143,7 +186,10 @@ export const StudentAuthProvider = ({ children }: StudentAuthProviderProps) => {
       addStudent,
       updateStudent,
       deleteStudent,
-      approveStudent
+      approveStudent,
+      exportStudentData,
+      bulkImportStudents,
+      getStudentsByStatus
     }}>
       {children}
     </StudentAuthContext.Provider>

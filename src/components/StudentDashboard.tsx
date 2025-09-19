@@ -33,7 +33,7 @@ export const StudentDashboard = () => {
         currentStudent.email,
         currentStudent.phone,
         currentStudent.address,
-        currentStudent.cgpa,
+        currentStudent.address,
         currentStudent.bio,
         currentStudent.skills?.length,
         currentStudent.profilePicture
@@ -142,12 +142,10 @@ export const StudentDashboard = () => {
                   <span className="text-sm">{currentStudent.lga}</span>
                 </div>
               )}
-              {currentStudent.cgpa && (
-                <div className="flex items-center gap-2">
-                  <Trophy className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">CGPA: {currentStudent.cgpa}</span>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">Status: {currentStudent.completionStatus}</span>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -178,14 +176,12 @@ export const StudentDashboard = () => {
                   <span className="text-sm">{currentStudent.entryYear}</span>
                 </div>
               )}
-              {currentStudent.cgpa && (
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium">CGPA:</span>
-                  <Badge variant="outline" className="text-primary border-primary">
-                    {currentStudent.cgpa}
-                  </Badge>
-                </div>
-              )}
+              <div className="flex justify-between">
+                <span className="text-sm font-medium">Status:</span>
+                <Badge variant="outline" className="text-primary border-primary">
+                  {currentStudent.completionStatus}
+                </Badge>
+              </div>
             </div>
           </CardContent>
         </Card>
