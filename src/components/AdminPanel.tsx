@@ -223,7 +223,7 @@ export const AdminPanel = () => {
                         <div><strong>Level:</strong> {student.level}</div>
                         <div><strong>Phone:</strong> {student.phone || 'Missing'}</div>
                         <div><strong>LGA:</strong> {student.lga || 'Missing'}</div>
-                        <div><strong>CGPA:</strong> {student.cgpa || 'Missing'}</div>
+                        <div><strong>Entry Year:</strong> {student.entryYear || 'Missing'}</div>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         <Button size="sm" onClick={() => handleApprove(student.id)} className="btn-university">
@@ -272,7 +272,7 @@ export const AdminPanel = () => {
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 mb-4 text-sm">
                         <div><strong>Level:</strong> {student.level}</div>
-                        <div><strong>Final CGPA:</strong> {student.cgpa || 'N/A'}</div>
+                        <div><strong>Phone:</strong> {student.phone || 'N/A'}</div>
                         <div><strong>Entry Year:</strong> {student.entryYear || 'N/A'}</div>
                         <div><strong>Status:</strong> Alumni</div>
                       </div>
